@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Français fiche 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Un cahier de français à lignes : marge rouge, encre bleue */
+:root{
+  --bg:#f7f4ec; --card:#fff; --fg:#1d2433; --muted:#5b6478; --line:#dcd6c6; --rule:#c9d6ee; --margin:#e07070;
+  --ink:#2f5fc0; --faire:#d9622b; --dire:#7a4cc2; --mettre:#2f8f57;
+  --ok:#2f8f57; --ok-bg:#e1f3e7; --bad:#b8323f; --bad-bg:#fbe4e6; --gold:#f2b705; --hint-bg:#fff6d6;
+  --display:"Baloo 2","Comic Sans MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16181f; --card:#20232c; --fg:#eceff6; --muted:#a4acbf; --line:#343b4b; --rule:#2c3550; --margin:#8a3b3b;
+  --ink:#8fb0ff; --faire:#ff9b66; --dire:#b996ff; --mettre:#7fd49c;
+  --ok:#7fd49c; --ok-bg:#1d3a28; --bad:#ff8a95; --bad-bg:#43242a; --hint-bg:#3a3420; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16181f; --card:#20232c; --fg:#eceff6; --muted:#a4acbf; --line:#343b4b; --rule:#2c3550; --margin:#8a3b3b;
+  --ink:#8fb0ff; --faire:#ff9b66; --dire:#b996ff; --mettre:#7fd49c;
+  --ok:#7fd49c; --ok-bg:#1d3a28; --bad:#ff8a95; --bad-bg:#43242a; --hint-bg:#3a3420; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:19px;line-height:1.5}
+.wrap{max-width:820px;margin:0 auto;padding:20px 16px 64px;display:flex;flex-direction:column;gap:22px}
+header h1{font-family:var(--display);font-size:clamp(2rem,6vw,2.8rem);line-height:1.05;margin:0;color:var(--ink)}
+header p{margin:.4rem 0 0;color:var(--muted)}
+.score{position:sticky;top:0;z-index:5;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 14px;
+  font-family:var(--display);font-size:1.15rem;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.score .stars{font-size:1.4rem;letter-spacing:2px}
+section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 20px 20px 34px;display:flex;flex-direction:column;gap:14px;min-width:0;
+  background-image:linear-gradient(90deg,transparent 22px,var(--margin) 22px,var(--margin) 24px,transparent 24px);}
+section h2{font-family:var(--display);font-size:1.5rem;margin:0;line-height:1.15}
+section h2 small{display:block;font-family:var(--body);font-size:.85rem;color:var(--muted);font-weight:400}
+.consigne{margin:0;color:var(--muted)}
+.v-faire{color:var(--faire);font-weight:700}.v-dire{color:var(--dire);font-weight:700}.v-mettre{color:var(--mettre);font-weight:700}
+/* Mémo */
+.tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tbl{border:2px solid var(--line);border-radius:12px;padding:10px 12px}
+.tbl h3{margin:0 0 6px;font-family:var(--display);font-size:1.25rem}
+.tbl table{border-collapse:collapse;width:100%;font-size:1rem}
+.tbl td{padding:2px 4px;border-bottom:1px solid var(--rule)}
+.tbl td:first-child{color:var(--muted);width:42%}
+.tbl .imp td{border-bottom:0}
+.tbl .sep td{padding-top:8px;font-family:var(--display);color:var(--muted);font-size:.9rem;border-bottom:0}
+.tip{background:var(--hint-bg);border-radius:12px;padding:10px 14px;margin:0;font-size:1rem}
+details summary{cursor:pointer;font-family:var(--display);font-size:1.1rem;color:var(--ink)}
+/* Questions */
+.q{border-top:2px dashed var(--line);padding-top:14px;display:flex;flex-direction:column;gap:8px}
+.q:first-of-type{border-top:0;padding-top:0}
+.q-head{font-family:var(--display);font-size:1.05rem;color:var(--muted)}
+.q-head b{color:var(--fg)}
+.line{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:1.2rem}
+input.ans{font:inherit;font-size:1.15rem;min-width:0;width:220px;max-width:100%;padding:6px 10px;border:2px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--fg)}
+input.ans:focus{outline:3px solid var(--gold);outline-offset:1px;border-color:var(--ink)}
+input.ans.ok{border-color:var(--ok);background:var(--ok-bg)}
+input.ans.bad{border-color:var(--bad);background:var(--bad-bg)}
+textarea.ans{font:inherit;font-size:1.1rem;width:100%;padding:8px 10px;border:2px solid var(--rule);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-family:var(--display);font-size:1.05rem;border:0;border-radius:12px;padding:6px 16px;cursor:pointer;background:var(--ink);color:#fff}
+button.ghost{background:transparent;color:var(--muted);border:2px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.choices{display:flex;flex-wrap:wrap;gap:10px}
+.choices button{background:var(--bg);color:var(--fg);border:2px solid var(--rule);font-size:1.15rem}
+.choices button.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--fg)}
+.choices button.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--fg)}
+.fb{margin:0;font-size:1rem;min-height:0}
+.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+.fb.hint{color:var(--fg);background:var(--hint-bg);border-radius:10px;padding:6px 10px}
+.end{text-align:center;font-family:var(--display);font-size:1.3rem}
+.end .big{font-size:3rem;letter-spacing:6px}
+@media (max-width:480px){section{padding-left:30px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>✏️ Défi de conjugaison · fiche 7</h1>
+  <p>Les verbes <span class="v-faire">faire</span>, <span class="v-dire">dire</span> et <span class="v-mettre">mettre</span> au <b>présent</b> et à l'<b>impératif</b>.</p>
+</header>
+
+<div class="score"><span>Points : <b id="pts">0</b> / <b id="max">0</b></span><span class="stars" id="stars">☆☆☆</span></div>
+
+<section>
+  <h2>📒 Le mémo <small>Lis-le avant de commencer. Tu peux revenir ici à tout moment.</small></h2>
+  <div class="tables">
+    <div class="tbl"><h3 class="v-faire">faire</h3><table>
+      <tr><td>je</td><td>fais</td></tr><tr><td>tu</td><td>fais</td></tr><tr><td>il / elle</td><td>fait</td></tr>
+      <tr><td>nous</td><td>faisons</td></tr><tr><td>vous</td><td>faites</td></tr><tr><td>ils / elles</td><td>font</td></tr>
+      <tr class="sep"><td colspan="2">Impératif</td></tr><tr class="imp"><td colspan="2">Fais ! · Faisons ! · Faites !</td></tr></table></div>
+    <div class="tbl"><h3 class="v-dire">dire</h3><table>
+      <tr><td>je</td><td>dis</td></tr><tr><td>tu</td><td>dis</td></tr><tr><td>il / elle</td><td>dit</td></tr>
+      <tr><td>nous</td><td>disons</td></tr><tr><td>vous</td><td>dites</td></tr><tr><td>ils / elles</td><td>disent</td></tr>
+      <tr class="sep"><td colspan="2">Impératif</td></tr><tr class="imp"><td colspan="2">Dis ! · Disons ! · Dites !</td></tr></table></div>
+    <div class="tbl"><h3 class="v-mettre">mettre</h3><table>
+      <tr><td>je</td><td>mets</td></tr><tr><td>tu</td><td>mets</td></tr><tr><td>il / elle</td><td>met</td></tr>
+      <tr><td>nous</td><td>mettons</td></tr><tr><td>vous</td><td>mettez</td></tr><tr><td>ils / elles</td><td>mettent</td></tr>
+      <tr class="sep"><td colspan="2">Impératif</td></tr><tr class="imp"><td colspan="2">Mets ! · Mettons ! · Mettez !</td></tr></table></div>
+  </div>
+  <p class="tip">🧠 <b>L'impératif, c'est pour donner un ordre ou un conseil.</b> Il n'a que 3 personnes (tu, nous, vous) et <b>on n'écrit pas le pronom</b> : on écrit « Fais tes devoirs ! », pas « Tu fais ».</p>
+  <p class="tip">⚠️ <b>Les pièges :</b> vous <b>faites</b> et vous <b>dites</b> (pas « faisez », pas « disez ») · il <b>met</b> sans s · ils <b>font</b>.</p>
+</section>
+
+<section id="s1">
+  <h2>🔥 Mission 1 · Échauffement <small>Clique sur la bonne forme.</small></h2>
+</section>
+
+<section id="s2">
+  <h2>📝 Mission 2 · La fiche 7 <small>Complète les phrases. Au présent, écris aussi le pronom (ex. « nous faisons »). À l'impératif, écris seulement le verbe.</small></h2>
+</section>
+
+<section id="s3">
+  <h2>🕵️ Mission 3 · Ordre ou pas ordre ? <small>Est-ce que la phrase est au présent ou à l'impératif ?</small></h2>
+</section>
+
+<section id="s4">
+  <h2>💡 Mission 4 · Invente 3 phrases à l'impératif <small>Utilise faire, dire ou mettre. Commence par le verbe, termine par « ! ». Exemple : « Mets ton bonnet ! »</small></h2>
+</section>
+
+<section class="end" id="end">
+  <div>Ton score final</div>
+  <div class="big" id="endStars">☆☆☆</div>
+  <div id="endMsg">Fais toutes les missions pour voir tes étoiles !</div>
+  <div class="btns" style="justify-content:center"><button class="ghost" onclick="resetAll()">🔄 Recommencer</button></div>
+</section>
+</div>
+
+<script>
+const KEY='louis-fr-fiche7';
+let state={};
+try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){state={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+const norm=s=>s.toLowerCase().replace(/[’`]/g,"'").replace(/[!.?,;:]/g,' ').replace(/\s+/g,' ').trim();
+const vclass=v=>'v-'+v;
+let total=0;
+function el(tag,attrs={},html=''){const e=document.createElement(tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(html)e.innerHTML=html;return e}
+
+/* ---------- Mission 1 : QCM ---------- */
+const qcm=[
+ {p:'nous',v:'faire',t:'présent',c:['nous faisons','nous fesons','nous faisez'],a:0,h:'Avec « nous », le verbe finit presque toujours par -ons.'},
+ {p:'vous',v:'faire',t:'présent',c:['vous faisez','vous faites','vous faisons'],a:1,h:'C\'est un verbe bizarre ! Regarde le mémo : vous fai…'},
+ {p:'il',v:'mettre',t:'présent',c:['il mets','il mette','il met'],a:2,h:'Avec « il », mettre n\'a pas de s à la fin.'},
+ {p:'ils',v:'dire',t:'présent',c:['ils disent','ils dises','ils dit'],a:0,h:'Avec « ils », le verbe finit souvent par -ent.'},
+ {p:'vous',v:'dire',t:'présent',c:['vous disez','vous dites','vous disons'],a:1,h:'Comme « vous faites »… vous di…'},
+ {p:'ils',v:'faire',t:'présent',c:['ils faisent','ils fait','ils font'],a:2,h:'Un mot très court, avec un o.'},
+];
+const s1=document.getElementById('s1');
+qcm.forEach((q,i)=>{
+  total++;
+  const id='m1-'+i, d=el('div',{class:'q'});
+  d.append(el('div',{class:'q-head'},`${i+1}. <b>${q.p}</b> · <span class="${vclass(q.v)}">${q.v}</span> · ${q.t}`));
+  const ch=el('div',{class:'choices'}), fb=el('p',{class:'fb'}), hb=el('button',{class:'ghost'},'💡 Indice');
+  q.c.forEach((c,j)=>{const b=el('button',{},c);b.onclick=()=>{
+      if(state[id]&&state[id].done)return;
+      if(j===q.a){b.classList.add('ok');fb.className='fb ok';fb.textContent='Bravo ! ✅';
+        state[id]={done:true,first:!state[id]};lock();}
+      else{b.classList.add('bad');b.disabled=true;fb.className='fb bad';fb.textContent='Pas encore… essaie une autre réponse.';state[id]={tried:true};}
+      save();update();};ch.append(b)});
+  function lock(){[...ch.children].forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('ok')});hb.disabled=true}
+  hb.onclick=()=>{fb.className='fb hint';fb.textContent='💡 '+q.h};
+  d.append(ch,el('div',{class:'btns'}),fb);d.querySelector('.btns').append(hb);
+  s1.append(d);
+  if(state[id]&&state[id].done){lock();fb.className='fb ok';fb.textContent='Bravo ! ✅'}
+});
+
+/* ---------- Mission 2 : la fiche 7 ---------- */
+const fiche=[
+ {p:'Nous',v:'faire',t:'présent',before:'',after:'un gâteau.',ans:['nous faisons'],pro:'nous',h:['Au présent, écris « nous » puis le verbe.','Avec nous, faire finit par -sons : nous fai…sons.']},
+ {p:'Tu',v:'dire',t:'impératif',before:'',after:'la vérité !',ans:['dis'],h:['À l\'impératif, on n\'écrit pas « tu ».','C\'est comme « tu dis », mais sans « tu ».']},
+ {p:'Je',v:'mettre',t:'présent',before:'',after:'ma veste.',ans:['je mets'],pro:'je',h:['Écris « je » puis le verbe.','Avec je, mettre finit par -ts.']},
+ {p:'Vous',v:'dire',t:'impératif',before:'',after:'-moi tout !',ans:['dites'],h:['À l\'impératif, on n\'écrit pas « vous ».','Attention, piège ! Ce n\'est pas « disez ». Regarde le mémo.']},
+ {p:'Il',v:'mettre',t:'présent',before:'',after:'ses chaussures.',ans:['il met'],pro:'il',h:['Écris « il » puis le verbe.','Avec il, mettre n\'a pas de s : il me…']},
+ {p:'Tu',v:'faire',t:'impératif',before:'',after:'tes devoirs !',ans:['fais'],h:['À l\'impératif, on n\'écrit pas « tu ».','C\'est comme « tu fais », mais sans « tu ».']},
+ {p:'Ils',v:'dire',t:'présent',before:'',after:'n\'importe quoi.',ans:['ils disent'],pro:'ils',h:['Écris « ils » puis le verbe.','Avec ils, le verbe finit par -ent.']},
+ {p:'Nous',v:'mettre',t:'impératif',before:'',after:'la table !',ans:['mettons'],h:['À l\'impératif, on n\'écrit pas « nous ».','C\'est comme « nous mettons », mais sans « nous ».']},
+ {p:'Elle',v:'dire',t:'présent',before:'',after:'beaucoup de choses.',ans:['elle dit'],pro:'elle',h:['Écris « elle » puis le verbe.','Avec elle, dire finit par un t.']},
+ {p:'Vous',v:'faire',t:'impératif',before:'',after:'vos exercices !',ans:['faites'],h:['À l\'impératif, on n\'écrit pas « vous ».','Attention, piège ! Ce n\'est pas « faisez ». Regarde le mémo.']},
+];
+const s2=document.getElementById('s2');
+fiche.forEach((q,i)=>{
+  total++;
+  const id='m2-'+i, d=el('div',{class:'q'});
+  d.append(el('div',{class:'q-head'},`${i+1}. <b>${q.p}</b> · <span class="${vclass(q.v)}">${q.v}</span> · <b>${q.t}</b>`));
+  const line=el('div',{class:'line'}), inp=el('input',{class:'ans',type:'text',autocomplete:'off',autocapitalize:'off',spellcheck:'false','aria-label':`Phrase ${i+1}`});
+  line.append(inp,el('span',{},q.after));
+  const fb=el('p',{class:'fb'}), btns=el('div',{class:'btns'});
+  const ok=el('button',{},'Vérifier'), hb=el('button',{class:'ghost'},'💡 Indice');
+  let hint=0;
+  function good(){inp.classList.remove('bad');inp.classList.add('ok');inp.disabled=true;ok.disabled=true;hb.disabled=true;fb.className='fb ok';fb.textContent='Bravo ! ✅'}
+  ok.onclick=()=>{
+    if(state[id]&&state[id].done)return;
+    const r=norm(inp.value); if(!r)return;
+    if(q.ans.includes(r)){state[id]={done:true,first:!state[id]};good();}
+    else{
+      inp.classList.add('bad');fb.className='fb bad';
+      const verbOnly=q.pro?q.ans[0].split(' ').slice(1).join(' '):null;
+      if(q.pro&&r===verbOnly) fb.textContent='Le verbe est juste ! Mais au présent, il faut aussi écrire le pronom « '+q.pro+' ».';
+      else if(!q.pro&&q.ans.some(a=>r.endsWith(' '+a))) fb.textContent='Le verbe est juste ! Mais à l\'impératif, on n\'écrit pas le pronom.';
+      else fb.textContent='Pas encore… relis le mémo ou demande un indice.';
+      state[id]={tried:true};
+    }
+    save();update();};
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')ok.click()});
+  inp.addEventListener('input',()=>inp.classList.remove('bad'));
+  hb.onclick=()=>{fb.className='fb hint';fb.textContent='💡 '+q.h[Math.min(hint,q.h.length-1)];hint++};
+  btns.append(ok,hb);d.append(line,btns,fb);s2.append(d);
+  if(state[id]&&state[id].done){inp.value=q.ans[0];good()}
+});
+
+/* ---------- Mission 3 : présent ou impératif ---------- */
+const tri=[
+ {s:'Tu fais du vélo.',a:'présent',h:'Il y a le pronom « tu » : on raconte ce qui se passe.'},
+ {s:'Fais attention !',a:'impératif',h:'Pas de pronom, c\'est un ordre.'},
+ {s:'Mettons nos bottes !',a:'impératif',h:'Pas de « nous » devant le verbe : c\'est un ordre.'},
+ {s:'Nous mettons nos bottes.',a:'présent',h:'Le pronom « nous » est là.'},
+ {s:'Dites bonjour !',a:'impératif',h:'Pas de « vous » devant le verbe.'},
+ {s:'Vous dites bonjour.',a:'présent',h:'Le pronom « vous » est là.'},
+];
+const s3=document.getElementById('s3');
+tri.forEach((q,i)=>{
+  total++;
+  const id='m3-'+i, d=el('div',{class:'q'});
+  d.append(el('div',{class:'q-head'},`${i+1}. « <b>${q.s}</b> »`));
+  const ch=el('div',{class:'choices'}), fb=el('p',{class:'fb'});
+  ['présent','impératif'].forEach(c=>{const b=el('button',{},c==='présent'?'📖 présent':'📣 impératif');b.dataset.v=c;b.onclick=()=>{
+    if(state[id]&&state[id].done)return;
+    if(c===q.a){b.classList.add('ok');state[id]={done:true,first:!state[id]};lock();fb.className='fb ok';fb.textContent='Bravo ! ✅ '+q.h}
+    else{b.classList.add('bad');b.disabled=true;state[id]={tried:true};fb.className='fb bad';fb.textContent='Non… regarde s\'il y a un pronom devant le verbe.'}
+    save();update();};ch.append(b)});
+  function lock(){[...ch.children].forEach(b=>{b.disabled=true;if(b.dataset.v===q.a)b.classList.add('ok')})}
+  d.append(ch,fb);s3.append(d);
+  if(state[id]&&state[id].done){lock();fb.className='fb ok';fb.textContent='Bravo ! ✅ '+q.h}
+});
+
+/* ---------- Mission 4 : inventer ---------- */
+const imp=['fais','faisons','faites','dis','disons','dites','mets','mettons','mettez'];
+const wrong={'faisez':'faites','disez':'dites','fait':'fais','dit':'dis','met':'mets','mettes':'mets','fesons':'faisons'};
+const s4=document.getElementById('s4');
+for(let i=0;i<3;i++){
+  total++;
+  const id='m4-'+i, d=el('div',{class:'q'});
+  d.append(el('div',{class:'q-head'},`Phrase ${i+1}`));
+  const ta=el('textarea',{class:'ans',rows:'2','aria-label':`Phrase inventée ${i+1}`});
+  const fb=el('p',{class:'fb'}), btns=el('div',{class:'btns'}), ok=el('button',{},'Vérifier');
+  ok.onclick=()=>{
+    const raw=ta.value.trim(); if(!raw)return;
+    const words=norm(raw).split(/[\s'-]+/).filter(Boolean);
+    const first=words[0]||'';
+    const used=s4.dataset; // garder la phrase
+    if(['tu','nous','vous','je','il','elle','ils','elles'].includes(first)){fb.className='fb bad';fb.textContent='À l\'impératif, on commence directement par le verbe, sans pronom.';return}
+    if(wrong[first]){fb.className='fb bad';fb.textContent='Presque ! On écrit « '+wrong[first][0].toUpperCase()+wrong[first].slice(1)+' ».';return}
+    if(!imp.includes(first)){fb.className='fb bad';fb.textContent='Commence ta phrase par faire, dire ou mettre à l\'impératif (regarde le mémo).';return}
+    if(words.length<2){fb.className='fb bad';fb.textContent='Ajoute la suite de la phrase (quoi ?).';return}
+    let msg='Bravo ! ✅';
+    if(!/^[A-ZÀ-Ý]/.test(raw)) msg+=' Petit conseil : une majuscule au début.';
+    if(!/!\s*$/.test(raw)) msg+=' Et un « ! » à la fin, c\'est encore mieux.';
+    if(!(state[id]&&state[id].done))state[id]={done:true,first:true,txt:raw};else state[id].txt=raw;
+    ta.classList.add('ok');fb.className='fb ok';fb.textContent=msg;save();update();};
+  btns.append(ok);d.append(ta,btns,fb);s4.append(d);
+  if(state[id]&&state[id].done){ta.value=state[id].txt||'';ta.classList.add('ok');fb.className='fb ok';fb.textContent='Bravo ! ✅'}
+}
+
+/* ---------- Score ---------- */
+document.getElementById('max').textContent=total;
+function update(){
+  let pts=0,done=0;
+  for(const k in state){if(state[k].done){done++;if(state[k].first)pts++}}
+  document.getElementById('pts').textContent=pts;
+  const r=pts/total, n=r>=.9?3:r>=.7?2:r>=.4?1:0, st='★'.repeat(n)+'☆'.repeat(3-n);
+  document.getElementById('stars').textContent=st;
+  if(done===total){
+    document.getElementById('endStars').textContent=st;
+    document.getElementById('endMsg').textContent=['Courage, refais la fiche demain : tu vas y arriver !','Bien ! Relis le mémo et recommence pour gagner plus d\'étoiles.','Très bien ! Encore un petit effort pour les 3 étoiles.','Champion de la conjugaison ! 🏆'][n]+` (${pts} / ${total} du premier coup)`;
+  }
+}
+function resetAll(){if(!confirmReset())return;state={};save();location.reload()}
+function confirmReset(){const b=document.querySelector('#end button');if(b.dataset.c){return true}b.dataset.c=1;b.textContent='Sûr ? Clique encore pour tout effacer';return false}
+update();
+</script>
+</body>
+</html>
