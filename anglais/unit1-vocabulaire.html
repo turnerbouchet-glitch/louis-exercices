@@ -1,0 +1,221 @@
+<!doctype html><html lang="fr"><head>
+<meta name="robots" content="noindex"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Louis – English Unit 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Layout: one column of exercise "cards" like pages of a workbook, a sticky score strip on top */
+:root{
+  --bg:#fbfaf5; --paper:#ffffff; --ink:#24262e; --muted:#6b6d78; --line:#e4e1d4;
+  --sun:#f5c518; --sunSoft:#fff4c7; --rust:#c8601e;
+  --ok:#2f8a4f; --okSoft:#e2f4e8; --bad:#c0392b; --badSoft:#fbe5e2;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1b1c21; --paper:#24262d; --ink:#f1efe6; --muted:#a4a6b0; --line:#3a3c45;
+  --sun:#f5c518; --sunSoft:#3d3416; --rust:#f0904f;
+  --ok:#5fcf86; --okSoft:#1d3a27; --bad:#ff8a7a; --badSoft:#43221f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1b1c21; --paper:#24262d; --ink:#f1efe6; --muted:#a4a6b0; --line:#3a3c45;
+  --sun:#f5c518; --sunSoft:#3d3416; --rust:#f0904f;
+  --ok:#5fcf86; --okSoft:#1d3a27; --bad:#ff8a7a; --badSoft:#43221f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+header{padding-top:28px;display:flex;flex-direction:column;gap:6px}
+.unit{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1;color:var(--rust)}
+.unit span{background:var(--sun);color:#3a2a00;border-radius:999px 999px 999px 999px;padding:6px 18px 2px}
+h1{font-family:var(--display);font-weight:800;font-size:1.6rem;margin:0;text-wrap:balance}
+header p{margin:0;color:var(--muted);max-width:62ch}
+.score{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:flex;align-items:center;gap:14px;border-bottom:2px dashed var(--line)}
+.score b{font-family:var(--display);font-size:1.4rem;font-variant-numeric:tabular-nums}
+.bar{flex:1;height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--sun);transition:width .4s}
+section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+section h2{font-family:var(--display);font-weight:800;font-size:1.35rem;margin:0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+section h2 .n{background:var(--sunSoft);color:var(--rust);border-radius:8px;padding:0 10px;font-size:1.1rem}
+.consigne{margin:0;color:var(--muted)}
+.consigne em{color:var(--ink);font-style:normal;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.row{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:2px solid var(--line);border-radius:10px;min-width:0}
+.row label{font-weight:800}
+input[type=text],select{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:8px;padding:6px 10px;width:100%;min-width:0}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.ok{border-color:var(--ok)!important;background:var(--okSoft)}
+.bad{border-color:var(--bad)!important;background:var(--badSoft)}
+.fix{font-size:.9rem;color:var(--bad);font-weight:700}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button{font:inherit;font-weight:800;border-radius:10px;border:2px solid transparent;padding:8px 16px;cursor:pointer}
+.check{background:var(--sun);color:#3a2a00}
+.check:hover{filter:brightness(.95)}
+.reset{background:transparent;color:var(--muted);border-color:var(--line)}
+.result{font-weight:800;font-family:var(--display);font-size:1.1rem}
+/* matching */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.tile{background:var(--bg);color:var(--ink);border:2px solid var(--line);text-align:left;font-weight:700}
+.tile.sel{border-color:var(--sun);background:var(--sunSoft)}
+.tile.done{border-color:var(--ok);background:var(--okSoft);cursor:default}
+.tile.wrong{animation:shake .35s;border-color:var(--bad)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* clocks */
+.time{font-family:var(--display);font-size:1.5rem;font-variant-numeric:tabular-nums;color:var(--rust)}
+/* dialogue */
+.dlg{display:flex;flex-direction:column;gap:10px}
+.line{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.who{font-family:var(--display);font-weight:800;min-width:3.6em}
+.line select{width:auto}
+.bank{display:flex;flex-wrap:wrap;gap:6px}
+.bank span{background:var(--sunSoft);border-radius:6px;padding:2px 10px;font-weight:700}
+/* sort */
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bin{border:2px dashed var(--line);border-radius:10px;padding:10px;min-height:90px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.bin h3{margin:0;font-family:var(--display);font-size:1.05rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--bg);color:var(--ink);border:2px solid var(--line);font-weight:700;padding:6px 12px}
+.chip.sel{border-color:var(--sun);background:var(--sunSoft)}
+/* spelling */
+.letters{display:flex;gap:6px;flex-wrap:wrap}
+.letters b{display:inline-grid;place-items:center;width:2em;height:2em;border-radius:8px;background:var(--sunSoft);font-family:var(--display);font-size:1.1rem;text-transform:uppercase}
+.hint{font-size:.9rem;color:var(--muted)}
+@media (max-width:520px){.bins{grid-template-columns:1fr}.unit{font-size:2rem}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="unit"><span>Unit 1</span></div>
+  <h1>Révision du vocabulaire d'anglais</h1>
+  <p>Six exercices sur la page 6 : les animaux, saluer, les petits mots, se présenter, les pays et l'orthographe. Clique sur « Vérifier » à la fin de chaque exercice.</p>
+</header>
+
+<div class="score" aria-live="polite"><b id="score">0 / 0</b><div class="bar"><i id="bar"></i></div><span class="hint">points</span></div>
+
+<section id="ex1">
+  <h2><span class="n">1</span> Pets</h2>
+  <p class="consigne">Écris le mot <em>en anglais</em>.</p>
+  <div class="grid" id="pets"></div>
+  <div class="actions"><button class="check" data-ex="1">Vérifier</button><button class="reset" data-ex="1">Recommencer</button><span class="result" id="r1"></span></div>
+</section>
+
+<section id="ex2">
+  <h2><span class="n">2</span> Hello and goodbye</h2>
+  <p class="consigne">Quelle salutation dis-tu ? Choisis la bonne réponse pour chaque situation.</p>
+  <div class="grid" id="greet"></div>
+  <div class="actions"><button class="check" data-ex="2">Vérifier</button><button class="reset" data-ex="2">Recommencer</button><span class="result" id="r2"></span></div>
+</section>
+
+<section id="ex3">
+  <h2><span class="n">3</span> Words and phrases</h2>
+  <p class="consigne">Clique sur un mot anglais, puis sur sa traduction en français.</p>
+  <div class="match"><div class="col" id="mEn"></div><div class="col" id="mFr"></div></div>
+  <div class="actions"><button class="reset" data-ex="3">Recommencer</button><span class="result" id="r3"></span></div>
+</section>
+
+<section id="ex4">
+  <h2><span class="n">4</span> Se présenter</h2>
+  <p class="consigne">Complète le dialogue entre Léa et Joël avec les bons mots.</p>
+  <div class="dlg" id="dlg"></div>
+  <div class="actions"><button class="check" data-ex="4">Vérifier</button><button class="reset" data-ex="4">Recommencer</button><span class="result" id="r4"></span></div>
+</section>
+
+<section id="ex5">
+  <h2><span class="n">5</span> Geography</h2>
+  <p class="consigne">Range chaque mot dans la bonne boîte : clique sur un mot, puis sur une boîte.</p>
+  <div class="chips" id="geoChips"></div>
+  <div class="bins" id="bins"></div>
+  <p class="consigne" style="margin-top:6px">Puis écris le nom du pays <em>en anglais</em>.</p>
+  <div class="grid" id="countries"></div>
+  <div class="actions"><button class="check" data-ex="5">Vérifier</button><button class="reset" data-ex="5">Recommencer</button><span class="result" id="r5"></span></div>
+</section>
+
+<section id="ex6">
+  <h2><span class="n">6</span> How do you spell it?</h2>
+  <p class="consigne">Les lettres sont mélangées. Remets-les dans l'ordre pour trouver le mot anglais.</p>
+  <div class="grid" id="spell"></div>
+  <div class="actions"><button class="check" data-ex="6">Vérifier</button><button class="reset" data-ex="6">Recommencer</button><span class="result" id="r6"></span></div>
+</section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const norm=s=>s.toLowerCase().replace(/[’']/g,"'").replace(/[.!?]/g,"").replace(/\s+/g," ").trim();
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pts={},max={1:6,2:6,3:7,4:6,5:14,6:6};
+function setScore(ex,v){pts[ex]=v;const t=Object.values(pts).reduce((a,b)=>a+b,0),m=Object.values(max).reduce((a,b)=>a+b,0);
+  $("#score").textContent=t+" / "+m;$("#bar").style.width=(100*t/m)+"%"}
+function result(ex,got){const m=max[ex];$("#r"+ex).textContent=got===m?"Bravo, "+got+"/"+m+" !":got+"/"+m+" — corrige les cases en rouge";setScore(ex,got)}
+function mark(el,ok,answer){el.classList.remove("ok","bad");el.classList.add(ok?"ok":"bad");
+  const box=el.closest(".row");if(!box)return;let f=box.querySelector(".fix");
+  if(!ok){if(!f){f=document.createElement("span");f.className="fix";box.appendChild(f)}f.textContent="Réponse : "+answer}else if(f)f.remove()}
+
+/* 1 pets */
+const PETS=[["chat","cat"],["chien","dog"],["poisson","fish"],["hamster","hamster"],["souris","mouse"],["lapin","rabbit"]];
+function build1(){$("#pets").innerHTML=shuffle(PETS).map((p,i)=>`<div class="row"><label for="p${i}">${p[0]}</label><input type="text" id="p${i}" data-a="${p[1]}" autocomplete="off" autocapitalize="off" spellcheck="false"></div>`).join("");$("#r1").textContent="";setScore(1,0)}
+function check1(){let g=0;document.querySelectorAll("#pets input").forEach(i=>{const ok=norm(i.value)===i.dataset.a;g+=ok;mark(i,ok,i.dataset.a)});result(1,g)}
+
+/* 2 greetings */
+const OPTS=["Good morning.","Good afternoon.","Good evening.","Good night.","Goodbye.","Hi."];
+const GREET=[["Il est 8 h, tu arrives à l'école.","Good morning."],["Il est 15 h, tu rencontres ta voisine.","Good afternoon."],["Il est 19 h, tu arrives chez ta grand-mère.","Good evening."],["Tu vas te coucher.","Good night."],["Tu dis au revoir à ta maîtresse à la fin de la journée.","Goodbye."],["Tu dis « salut » à un copain.","Hi."]];
+function build2(){$("#greet").innerHTML=shuffle(GREET).map((g,i)=>`<div class="row"><label for="g${i}">${g[0]}</label><select id="g${i}" data-a="${g[1]}"><option value="">— choisis —</option>${OPTS.map(o=>`<option>${o}</option>`).join("")}</select></div>`).join("");$("#r2").textContent="";setScore(2,0)}
+function check2(){let g=0;document.querySelectorAll("#greet select").forEach(s=>{const ok=s.value===s.dataset.a;g+=ok;mark(s,ok,s.dataset.a)});result(2,g)}
+
+/* 3 matching */
+const WORDS=[["and","et"],["cool","génial"],["fine","bien"],["great","super"],["no","non"],["yes","oui"],["pet","animal de compagnie"]];
+let selEn=null,found=0;
+function build3(){found=0;selEn=null;
+  $("#mEn").innerHTML=shuffle(WORDS).map(w=>`<button class="tile" data-k="${w[0]}">${w[0]}</button>`).join("");
+  $("#mFr").innerHTML=shuffle(WORDS).map(w=>`<button class="tile" data-k="${w[0]}">${w[1]}</button>`).join("");
+  $("#r3").textContent="";setScore(3,0)}
+document.addEventListener("click",e=>{const t=e.target.closest(".tile");if(!t||t.classList.contains("done"))return;
+  if(t.parentElement.id==="mEn"){document.querySelectorAll("#mEn .tile").forEach(x=>x.classList.remove("sel"));t.classList.add("sel");selEn=t;return}
+  if(!selEn){$("#r3").textContent="Commence par un mot anglais (colonne de gauche).";return}
+  if(t.dataset.k===selEn.dataset.k){[t,selEn].forEach(x=>{x.classList.remove("sel");x.classList.add("done")});selEn=null;found++;setScore(3,found);
+    $("#r3").textContent=found===WORDS.length?"Bravo, tout est juste !":found+" / "+WORDS.length}
+  else{t.classList.remove("wrong");void t.offsetWidth;t.classList.add("wrong")}});
+
+/* 4 dialogue */
+const DLG=[["Léa","Hello! My","name's","Léa. What's your name?"],["Joël","Hi, Léa!","I'm","Joël."],["Léa","How","are","you?"],["Joël","I'm","fine",", thanks. This is my dog. His name's Max."],["Léa","Cool! How do you","spell","Max?"],["Joël","M - A - X. See","you","!"]];
+const BANK=["name's","I'm","are","fine","spell","you"];
+function build4(){const opts=shuffle(BANK);
+  $("#dlg").innerHTML=`<div class="bank">${BANK.map(b=>`<span>${b}</span>`).join("")}</div>`+DLG.map((d,i)=>`<div class="row"><div class="line"><span class="who">${d[0]}</span><span>${d[1]}</span><select id="d${i}" data-a="${d[2]}" aria-label="Mot manquant ${i+1}"><option value="">…</option>${opts.map(o=>`<option>${o}</option>`).join("")}</select><span>${d[3]}</span></div></div>`).join("");
+  $("#r4").textContent="";setScore(4,0)}
+function check4(){let g=0;document.querySelectorAll("#dlg select").forEach(s=>{const ok=s.value===s.dataset.a;g+=ok;mark(s,ok,s.dataset.a)});result(4,g)}
+
+/* 5 geography */
+const GEO=[["Britain","pays"],["Spain","pays"],["Portugal","pays"],["Europe","continent"],["city","lieu"],["town","lieu"],["village","lieu"],["country","lieu"]];
+const BINS=[["pays","Des pays"],["continent","Un continent"],["lieu","Des lieux (ville, pays…)"]];
+const CTRY=[["Suisse","switzerland"],["Allemagne","germany"],["Italie","italy"],["France","france"],["Espagne","spain"],["Grande-Bretagne","britain"]];
+let selChip=null;
+function build5(){selChip=null;
+  $("#geoChips").innerHTML=shuffle(GEO).map(g=>`<button class="chip" data-a="${g[1]}">${g[0]}</button>`).join("");
+  $("#bins").innerHTML=BINS.map(b=>`<div class="bin" data-b="${b[0]}" role="button" tabindex="0"><h3>${b[1]}</h3></div>`).join("");
+  $("#countries").innerHTML=shuffle(CTRY).map((c,i)=>`<div class="row"><label for="c${i}">${c[0]}</label><input type="text" id="c${i}" data-a="${c[1]}" autocomplete="off" autocapitalize="off" spellcheck="false"></div>`).join("");
+  $("#r5").textContent="";setScore(5,0)}
+document.addEventListener("click",e=>{const c=e.target.closest(".chip");
+  if(c){document.querySelectorAll(".chip").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");selChip=c;return}
+  const b=e.target.closest(".bin");if(b&&selChip){selChip.classList.remove("sel","ok","bad");b.appendChild(selChip);selChip=null}});
+function check5(){let g=0;
+  document.querySelectorAll(".chip").forEach(c=>{const bin=c.closest(".bin");const ok=bin&&bin.dataset.b===c.dataset.a;c.classList.remove("ok","bad");c.classList.add(ok?"ok":"bad");g+=!!ok});
+  document.querySelectorAll("#countries input").forEach(i=>{const ok=norm(i.value)===i.dataset.a||(i.dataset.a==="britain"&&norm(i.value)==="great britain");g+=ok;mark(i,ok,i.dataset.a[0].toUpperCase()+i.dataset.a.slice(1))});
+  result(5,g)}
+
+/* 6 spelling */
+const SPELL=[["rabbit","un animal aux longues oreilles"],["mouse","un tout petit animal gris"],["morning","le début de la journée"],["goodbye","pour dire au revoir"],["great","super"],["village","plus petit qu'une ville"]];
+function scramble(w){let s;do{s=shuffle(w.split("")).join("")}while(s===w);return s}
+function build6(){$("#spell").innerHTML=shuffle(SPELL).map((s,i)=>`<div class="row"><div class="letters">${scramble(s[0]).split("").map(l=>`<b>${l}</b>`).join("")}</div><span class="hint">${s[1]}</span><input type="text" id="s${i}" data-a="${s[0]}" aria-label="Mot ${i+1}" autocomplete="off" autocapitalize="off" spellcheck="false"></div>`).join("");$("#r6").textContent="";setScore(6,0)}
+function check6(){let g=0;document.querySelectorAll("#spell input").forEach(i=>{const ok=norm(i.value)===i.dataset.a;g+=ok;mark(i,ok,i.dataset.a)});result(6,g)}
+
+const B={1:build1,2:build2,3:build3,4:build4,5:build5,6:build6},C={1:check1,2:check2,4:check4,5:check5,6:check6};
+document.querySelectorAll("button.check").forEach(b=>b.onclick=()=>C[b.dataset.ex]());
+document.querySelectorAll("button.reset").forEach(b=>b.onclick=()=>B[b.dataset.ex]());
+document.addEventListener("keydown",e=>{if(e.key==="Enter"){const s=e.target.closest("section");if(s&&e.target.matches("input")){const c=s.querySelector("button.check");c&&c.click()}
+  if(e.target.classList.contains("bin"))e.target.click()}});
+Object.values(B).forEach(f=>f());
+</script>
+</html>

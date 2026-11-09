@@ -1,0 +1,418 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Révision de Louis</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: un cahier de sciences, une colonne d'exercices, codes couleur de la classe (réceptacle, sépales, pétales, étamines, pistil) */
+:root{
+  --bg:#f6f8f3; --card:#ffffff; --fg:#1f2a22; --muted:#5d6b60; --line:#d9e2d5;
+  --leaf:#2f7a3e; --leaf-soft:#e3f1e2; --recept:#8cc97a;
+  --petal:#d23a5a; --pollen:#f2c230; --pistil:#2f6fd0;
+  --ok:#2f7a3e; --ok-bg:#e1f3df; --bad:#b8323f; --bad-bg:#fbe4e6;
+  --display:"Baloo 2", "Comic Sans MS", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151b16; --card:#1e2620; --fg:#eaf1e8; --muted:#a6b5a8; --line:#33402f;
+  --leaf:#7fcf86; --leaf-soft:#22362a; --ok:#7fcf86; --ok-bg:#1f3a24; --bad:#ff8a95; --bad-bg:#40232a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151b16; --card:#1e2620; --fg:#eaf1e8; --muted:#a6b5a8; --line:#33402f;
+  --leaf:#7fcf86; --leaf-soft:#22362a; --ok:#7fcf86; --ok-bg:#1f3a24; --bad:#ff8a95; --bad-bg:#40232a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:18px;line-height:1.5}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px;display:flex;flex-direction:column;gap:28px}
+header h1{font-family:var(--display);font-size:clamp(2rem,6vw,2.8rem);line-height:1.05;margin:0;color:var(--leaf);text-wrap:balance}
+header p{margin:.4rem 0 0;color:var(--muted);max-width:60ch}
+.code{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.code span{font-size:.8rem;padding:2px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line)}
+.code i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.score{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px;border-bottom:2px dashed var(--line);font-family:var(--display);font-size:1.15rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar{flex:1;min-width:140px;height:14px;align-self:center;background:var(--line);border-radius:99px;overflow:hidden}
+.bar div{height:100%;width:0;background:var(--leaf);transition:width .4s}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+section h2{font-family:var(--display);font-size:1.5rem;margin:0;line-height:1.15}
+section h2 small{display:block;font-family:var(--body);font-size:.85rem;color:var(--muted);font-weight:400}
+.ex-num{color:var(--petal)}
+.consigne{margin:0;color:var(--muted)}
+svg text{font-family:var(--display);font-weight:800}
+.flower-wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:640px){.flower-wrap{grid-template-columns:1fr}}
+.labels{display:grid;gap:8px}
+.labels label{display:flex;gap:8px;align-items:center}
+.num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-family:var(--display);font-size:.95rem}
+select,button{font:inherit;font-size:1rem}
+select{padding:6px 8px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);color:var(--fg);min-width:0;flex:1}
+select.ok{border-color:var(--ok);background:var(--ok-bg)} select.bad{border-color:var(--bad);background:var(--bad-bg)}
+.items{display:grid;gap:10px}
+.item{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line)}
+.item .name{font-weight:700;flex:1 1 140px}
+.item.ok{border-color:var(--ok);background:var(--ok-bg)} .item.bad{border-color:var(--bad);background:var(--bad-bg)}
+.choice{border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:99px;padding:4px 14px;cursor:pointer}
+.choice:hover{border-color:var(--leaf)}
+.choice[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:var(--card)}
+.why{flex-basis:100%;font-size:.9rem;color:var(--fg)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--leaf);color:var(--card);border:0;border-radius:10px;padding:10px 20px;font-family:var(--display);font-size:1.1rem;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid var(--line)}
+.result{font-family:var(--display);font-size:1.1rem}
+button:focus-visible,select:focus-visible{outline:3px solid var(--pollen);outline-offset:2px}
+.q{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.q:first-of-type{border-top:0;padding-top:0}
+.q p{margin:0;font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:10px;padding:6px 14px;cursor:pointer;text-align:left}
+.opt.ok{background:var(--ok-bg);border-color:var(--ok)} .opt.bad{background:var(--bad-bg);border-color:var(--bad)}
+.opt:disabled{cursor:default;opacity:1}
+.fb{font-size:.92rem;margin:0}
+.order{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:o}
+.order li{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;counter-increment:o}
+.order li::before{content:counter(o);font-family:var(--display);width:26px;height:26px;border-radius:50%;background:var(--pollen);color:#2a2100;display:grid;place-items:center;flex:none}
+.order li span{flex:1;min-width:0}
+.order li.ok{border-color:var(--ok);background:var(--ok-bg)} .order li.bad{border-color:var(--bad);background:var(--bad-bg)}
+.mv{border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;width:36px;height:32px;cursor:pointer}
+.trous p{margin:0 0 10px}
+.trous select{flex:none;width:auto;display:inline-block}
+.bravo{text-align:center;font-family:var(--display);font-size:1.4rem;color:var(--leaf)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Révision sciences :<br>de la fleur au fruit</h1>
+  <p>Salut Louis ! Fais les 8 exercices dans l'ordre. Clique sur « Vérifier » à la fin de chaque exercice. Tu peux recommencer autant de fois que tu veux.</p>
+  <div class="code" aria-label="Code couleur de la classe">
+    <span><i style="background:var(--recept)"></i>réceptacle</span>
+    <span><i style="background:#2f7a3e"></i>sépales</span>
+    <span><i style="background:var(--petal)"></i>pétales</span>
+    <span><i style="background:var(--pollen)"></i>étamines</span>
+    <span><i style="background:var(--pistil)"></i>pistil</span>
+  </div>
+</header>
+
+<div class="score"><span id="scoreTxt">Points : 0 / 0</span><div class="bar"><div id="scoreBar"></div></div></div>
+
+<!-- 1 -->
+<section id="ex1">
+  <h2><span class="ex-num">1.</span> Légende la fleur <small>Fiche 30 · les parties d'une fleur</small></h2>
+  <p class="consigne">Choisis le bon nom pour chaque numéro.</p>
+  <div class="flower-wrap">
+    <svg viewBox="0 0 400 370" role="img" aria-label="Schéma d'une fleur coupée avec 10 numéros">
+      <g stroke="#1f2a22" stroke-width="2">
+        <rect x="194" y="248" width="12" height="115" rx="5" fill="#2f7a3e"/>
+        <path d="M188,246 Q118,256 98,206 Q138,236 190,238 Z" fill="#2f7a3e"/>
+        <path d="M212,246 Q282,256 302,206 Q262,236 210,238 Z" fill="#2f7a3e"/>
+        <ellipse cx="200" cy="246" rx="34" ry="12" fill="#8cc97a"/>
+        <ellipse cx="132" cy="168" rx="78" ry="28" transform="rotate(50 132 168)" fill="#d23a5a"/>
+        <ellipse cx="268" cy="168" rx="78" ry="28" transform="rotate(-50 268 168)" fill="#d23a5a"/>
+        <line x1="178" y1="236" x2="158" y2="145" stroke="#c99a10" stroke-width="5"/>
+        <line x1="222" y1="236" x2="242" y2="145" stroke="#c99a10" stroke-width="5"/>
+        <line x1="178" y1="236" x2="158" y2="145" stroke="#f2c230" stroke-width="3"/>
+        <line x1="222" y1="236" x2="242" y2="145" stroke="#f2c230" stroke-width="3"/>
+        <ellipse cx="157" cy="134" rx="9" ry="15" fill="#f2c230"/>
+        <ellipse cx="243" cy="134" rx="9" ry="15" fill="#f2c230"/>
+        <rect x="195" y="122" width="10" height="80" fill="#2f6fd0"/>
+        <ellipse cx="200" cy="216" rx="24" ry="27" fill="#2f6fd0"/>
+        <ellipse cx="200" cy="216" rx="14" ry="17" fill="#ffffff"/>
+        <ellipse cx="200" cy="114" rx="18" ry="9" fill="#2f6fd0"/>
+      </g>
+      <g fill="#1f2a22"><circle cx="200" cy="206" r="4"/><circle cx="200" cy="217" r="4"/><circle cx="200" cy="228" r="4"/></g>
+      <g fill="#f2c230" stroke="#8a6a00" stroke-width="1"><circle cx="258" cy="118" r="3"/><circle cx="265" cy="110" r="3"/><circle cx="262" cy="125" r="2.5"/></g>
+      <g id="markers"></g>
+    </svg>
+    <div class="labels" id="flowerLabels"></div>
+  </div>
+  <div class="actions"><button class="btn" data-check="1">Vérifier</button><button class="btn ghost" data-reset="1">Recommencer</button><span class="result" id="res1"></span></div>
+</section>
+
+<!-- 2 -->
+<section id="ex2">
+  <h2><span class="ex-num">2.</span> Organe mâle ou organe femelle ? <small>L'étamine et le pistil</small></h2>
+  <p class="consigne">Pour chaque partie, choisis si elle appartient à l'étamine (organe mâle) ou au pistil (organe femelle).</p>
+  <div class="items" id="items2"></div>
+  <div class="actions"><button class="btn" data-check="2">Vérifier</button><button class="btn ghost" data-reset="2">Recommencer</button><span class="result" id="res2"></span></div>
+</section>
+
+<!-- 3 -->
+<section id="ex3">
+  <h2><span class="ex-num">3.</span> Fruit ou légume ? <small>Le critère des botanistes</small></h2>
+  <p class="consigne">Rappel : un fruit vient d'une fleur et contient au moins une graine. Attention aux pièges !</p>
+  <div class="items" id="items3"></div>
+  <div class="actions"><button class="btn" data-check="3">Vérifier</button><button class="btn ghost" data-reset="3">Recommencer</button><span class="result" id="res3"></span></div>
+</section>
+
+<!-- 4 -->
+<section id="ex4">
+  <h2><span class="ex-num">4.</span> Fruit charnu ou fruit sec ?</h2>
+  <p class="consigne">Charnu = la partie qui protège la graine est juteuse et riche en eau. Sec = elle est sèche et peu riche en eau.</p>
+  <div class="items" id="items4"></div>
+  <div class="actions"><button class="btn" data-check="4">Vérifier</button><button class="btn ghost" data-reset="4">Recommencer</button><span class="result" id="res4"></span></div>
+</section>
+
+<!-- 5 -->
+<section id="ex5">
+  <h2><span class="ex-num">5.</span> Quelle partie du légume mange-t-on ?</h2>
+  <p class="consigne">Feuille, racine, tige ou fleur ?</p>
+  <div class="items" id="items5"></div>
+  <div class="actions"><button class="btn" data-check="5">Vérifier</button><button class="btn ghost" data-reset="5">Recommencer</button><span class="result" id="res5"></span></div>
+</section>
+
+<!-- 6 -->
+<section id="ex6">
+  <h2><span class="ex-num">6.</span> Texte à trous <small>Fiche 33 et 34</small></h2>
+  <p class="consigne">Choisis le bon mot dans chaque liste.</p>
+  <div class="trous" id="trous"></div>
+  <div class="actions"><button class="btn" data-check="6">Vérifier</button><button class="btn ghost" data-reset="6">Recommencer</button><span class="result" id="res6"></span></div>
+</section>
+
+<!-- 7 -->
+<section id="ex7">
+  <h2><span class="ex-num">7.</span> Le cycle de vie d'une plante <small>Fiche 35</small></h2>
+  <p class="consigne">Remets les étapes dans le bon ordre avec les flèches ▲ ▼.</p>
+  <ol class="order" id="order"></ol>
+  <div class="actions"><button class="btn" data-check="7">Vérifier</button><button class="btn ghost" data-reset="7">Mélanger à nouveau</button><span class="result" id="res7"></span></div>
+</section>
+
+<!-- 8 -->
+<section id="ex8">
+  <h2><span class="ex-num">8.</span> Quiz final <small>Tout le chapitre</small></h2>
+  <p class="consigne">Clique sur la bonne réponse. Tu vois tout de suite si c'est juste.</p>
+  <div id="quiz"></div>
+  <div class="actions"><button class="btn ghost" data-reset="8">Recommencer le quiz</button><span class="result" id="res8"></span></div>
+</section>
+
+<p class="bravo" id="bravo" hidden>Bravo Louis, tu as tout réussi ! 🌸</p>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const scores = {}; // ex -> [got, max]
+function setScore(ex, got, max) {
+  scores[ex] = [got, max];
+  let g = 0, m = 0; Object.values(scores).forEach(([a, b]) => { g += a; m += b; });
+  $('#scoreTxt').textContent = `Points : ${g} / ${TOTAL}`;
+  $('#scoreBar').style.width = (100 * g / TOTAL) + '%';
+  $('#bravo').hidden = g < TOTAL;
+}
+function msg(ex, got, max) {
+  const el = $('#res' + ex);
+  el.textContent = got === max ? `${got}/${max} – parfait !` : `${got}/${max} – corrige ce qui est en rouge.`;
+  el.style.color = got === max ? 'var(--ok)' : 'var(--bad)';
+}
+
+/* ---------- 1. Légendes ---------- */
+const FLOWER = [
+  ['stigmate', 200, 112, 300, 40],
+  ['anthère', 150, 128, 70, 40],
+  ['style', 206, 160, 340, 95],
+  ['pollen', 266, 112, 360, 40],
+  ['pétale', 92, 140, 30, 140],
+  ['filet', 167, 190, 40, 200],
+  ['ovaire', 223, 222, 370, 175],
+  ['ovule', 202, 228, 365, 255],
+  ['sépale', 120, 228, 40, 270],
+  ['réceptacle', 214, 250, 340, 305],
+  ['pédoncule', 206, 330, 110, 345],
+];
+const flowerOrder = FLOWER.map((_, i) => i);
+const flowerNames = FLOWER.map(f => f[0]).sort((a, b) => a.localeCompare(b, 'fr'));
+function buildEx1() {
+  const g = $('#markers'); g.innerHTML = '';
+  const L = $('#flowerLabels'); L.innerHTML = '';
+  FLOWER.forEach(([name, px, py, mx, my], i) => {
+    g.insertAdjacentHTML('beforeend',
+      `<line x1="${px}" y1="${py}" x2="${mx}" y2="${my}" stroke="currentColor" stroke-width="1.5" style="color:var(--fg)"/>
+       <circle cx="${px}" cy="${py}" r="3" fill="currentColor" style="color:var(--fg)"/>
+       <circle cx="${mx}" cy="${my}" r="14" style="fill:var(--fg)"/>
+       <text x="${mx}" y="${my + 5}" text-anchor="middle" font-size="15" style="fill:var(--bg)">${i + 1}</text>`);
+    L.insertAdjacentHTML('beforeend',
+      `<label><span class="num">${i + 1}</span><select id="f${i}"><option value="">— choisis —</option>${flowerNames.map(n => `<option>${n}</option>`).join('')}</select></label>`);
+  });
+  $('#res1').textContent = '';
+}
+function checkEx1() {
+  let got = 0;
+  FLOWER.forEach(([name], i) => { const s = $('#f' + i); const ok = s.value === name; s.className = ok ? 'ok' : 'bad'; if (ok) got++; });
+  setScore(1, got, FLOWER.length); msg(1, got, FLOWER.length);
+}
+
+/* ---------- 2–5. Tri ---------- */
+const SORTS = {
+  2: { cats: ['Mâle (étamine)', 'Femelle (pistil)'], items: [
+    ['anthère', 0, "L'anthère est le sac à pollen, en haut de l'étamine."],
+    ['filet', 0, "Le filet est la petite tige qui porte l'anthère."],
+    ['pollen', 0, "Le pollen est fabriqué par l'anthère, donc par l'organe mâle."],
+    ['stigmate', 1, "Le stigmate est le haut du pistil : c'est lui qui reçoit le pollen."],
+    ['style', 1, "Le style est le « tube » du pistil, entre le stigmate et l'ovaire."],
+    ['ovaire', 1, "L'ovaire est en bas du pistil. Il deviendra le fruit."],
+    ['ovule', 1, "Les ovules sont dans l'ovaire. Ils deviendront les graines."],
+  ]},
+  3: { cats: ['Fruit', 'Légume'], items: [
+    ['tomate', 0, "La tomate vient d'une fleur et contient des graines : c'est un fruit !"],
+    ['poivron', 0, "Piège ! Le poivron vient d'une fleur et a plein de graines : c'est un fruit pour les botanistes."],
+    ['courgette', 0, "Piège ! La courgette contient des graines : c'est un fruit."],
+    ['citron', 0, "Le citron a des pépins (graines) : c'est un fruit."],
+    ['pêche', 0, "La pêche a un noyau avec une graine dedans : c'est un fruit."],
+    ['carotte', 1, "La carotte est une racine : pas de graine, c'est un légume."],
+    ['salade', 1, "On mange les feuilles de la salade : c'est un légume."],
+    ['asperge', 1, "On mange la tige de l'asperge : c'est un légume."],
+    ['brocoli', 1, "On mange les boutons de fleurs du brocoli, pas un fruit : c'est un légume."],
+  ]},
+  4: { cats: ['Charnu', 'Sec'], items: [
+    ['cerise', 0, "La cerise est juteuse autour du noyau : fruit charnu."],
+    ['noisette', 1, "La coque de la noisette est dure et sèche : fruit sec."],
+    ['raisin', 0, "Le raisin est plein de jus : fruit charnu."],
+    ['noix', 1, "La noix a une coque sèche : fruit sec."],
+    ['tomate', 0, "La tomate est pleine d'eau : fruit charnu."],
+    ['gland', 1, "Le gland (fruit du chêne) est sec : fruit sec."],
+    ['pomme', 0, "La pomme est juteuse : fruit charnu."],
+    ['châtaigne', 1, "La châtaigne est sèche dans sa bogue : fruit sec."],
+  ]},
+  5: { cats: ['Feuille', 'Racine', 'Tige', 'Fleur'], items: [
+    ['salade', 0, "On mange les feuilles de la salade."],
+    ['carotte', 1, "La carotte est une racine qui pousse sous la terre."],
+    ['asperge', 2, "L'asperge est une jeune tige."],
+    ['brocoli', 3, "Le brocoli, ce sont des petits boutons de fleurs."],
+    ['radis', 1, "Le radis est une racine."],
+    ['chou', 0, "Le chou est une boule de feuilles serrées."],
+    ['poireau', 2, "En classe, on a classé le poireau dans les légumes-tiges."],
+    ['chou romanesco', 3, "Le romanesco, comme le chou-fleur, ce sont des fleurs."],
+  ]},
+};
+const picks = {};
+function buildSort(ex) {
+  const { cats, items } = SORTS[ex];
+  picks[ex] = {};
+  const box = $('#items' + ex); box.innerHTML = '';
+  shuffle(items.map((it, i) => i)).forEach(i => {
+    const [name] = items[i];
+    const row = document.createElement('div'); row.className = 'item'; row.id = `it${ex}_${i}`;
+    row.innerHTML = `<span class="name">${name}</span>` +
+      cats.map((c, k) => `<button class="choice" aria-pressed="false" data-ex="${ex}" data-i="${i}" data-k="${k}">${c}</button>`).join('') +
+      `<span class="why" hidden></span>`;
+    box.appendChild(row);
+  });
+  $('#res' + ex).textContent = '';
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.choice'); if (!b) return;
+  const { ex, i, k } = b.dataset;
+  picks[ex][i] = +k;
+  b.parentElement.querySelectorAll('.choice').forEach(x => x.setAttribute('aria-pressed', x === b));
+  b.parentElement.classList.remove('ok', 'bad'); b.parentElement.querySelector('.why').hidden = true;
+});
+function checkSort(ex) {
+  const { items } = SORTS[ex]; let got = 0;
+  items.forEach(([name, ans, why], i) => {
+    const row = $(`#it${ex}_${i}`), w = row.querySelector('.why');
+    const ok = picks[ex][i] === ans; if (ok) got++;
+    row.classList.toggle('ok', ok); row.classList.toggle('bad', !ok);
+    w.hidden = ok; w.textContent = picks[ex][i] === undefined ? 'Tu n’as pas encore choisi.' : why;
+  });
+  setScore(ex, got, items.length); msg(ex, got, items.length);
+}
+
+/* ---------- 6. Texte à trous ---------- */
+const TROUS = [
+  ['Un fruit ', ['charnu', 'sec'], 1, ' est un fruit dont la partie qui protège la graine est sèche et peu riche en eau.'],
+  ['Un fruit ', ['charnu', 'sec'], 0, ' est un fruit dont la partie qui protège la graine est juteuse et riche en eau.'],
+  ['Après la fécondation, l’', ['ovaire', 'étamine', 'pétale'], 0, ' grossit et devient le fruit.'],
+  ['Les ', ['ovules', 'sépales', 'anthères'], 0, ' deviennent les graines.'],
+  ['Quand on mange une pêche, on mange l’', ['ovaire', 'réceptacle', 'pédoncule'], 0, ' de la fleur.'],
+  ['Dans la pomme, c’est le ', ['réceptacle', 'stigmate', 'filet'], 0, ' qui entoure et protège les ovaires.'],
+  ['La tomate a plusieurs graines parce que sa fleur avait plusieurs ', ['ovules', 'pétales', 'sépales'], 0, '.'],
+  ['Le transport du pollen des étamines jusqu’au pistil s’appelle la ', ['pollinisation', 'germination', 'dissémination'], 0, '.'],
+];
+function buildEx6() {
+  $('#trous').innerHTML = TROUS.map(([a, opts, , b], i) =>
+    `<p>${a}<select id="t${i}" aria-label="mot manquant ${i + 1}"><option value="">…</option>${shuffle(opts).map(o => `<option>${o}</option>`).join('')}</select>${b}</p>`).join('');
+  $('#res6').textContent = '';
+}
+function checkEx6() {
+  let got = 0;
+  TROUS.forEach(([, opts, ans], i) => { const s = $('#t' + i); const ok = s.value === opts[ans]; s.className = ok ? 'ok' : 'bad'; if (ok) got++; });
+  setScore(6, got, TROUS.length); msg(6, got, TROUS.length);
+}
+
+/* ---------- 7. Ordre ---------- */
+const CYCLE = [
+  'La fleur s’ouvre.',
+  'Le vent ou les insectes transportent le pollen jusqu’au stigmate : c’est la pollinisation.',
+  'Le pollen descend par le style jusqu’aux ovules : c’est la fécondation.',
+  'Les pétales et les étamines fanent et tombent.',
+  'L’ovaire grossit et devient un fruit ; les ovules deviennent des graines.',
+  'Le fruit mûr tombe ou est mangé : les graines sont transportées loin (dissémination).',
+  'La graine germe dans la terre.',
+  'Une nouvelle plante pousse et fera à son tour des fleurs.',
+];
+let orderNow = [];
+function buildEx7() {
+  do { orderNow = shuffle(CYCLE.map((_, i) => i)); } while (orderNow.every((v, i) => v === i));
+  drawOrder(); $('#res7').textContent = '';
+}
+function drawOrder(marks) {
+  $('#order').innerHTML = orderNow.map((v, pos) =>
+    `<li class="${marks ? (v === pos ? 'ok' : 'bad') : ''}"><span>${CYCLE[v]}</span>
+      <button class="mv" data-mv="-1" data-pos="${pos}" aria-label="Monter">▲</button>
+      <button class="mv" data-mv="1" data-pos="${pos}" aria-label="Descendre">▼</button></li>`).join('');
+}
+$('#order').addEventListener('click', e => {
+  const b = e.target.closest('.mv'); if (!b) return;
+  const p = +b.dataset.pos, q = p + +b.dataset.mv;
+  if (q < 0 || q >= orderNow.length) return;
+  [orderNow[p], orderNow[q]] = [orderNow[q], orderNow[p]];
+  drawOrder(); $('#res7').textContent = '';
+  const btn = $('#order').children[q].querySelector(`[data-mv="${b.dataset.mv}"]`); if (btn) btn.focus();
+});
+function checkEx7() {
+  const got = orderNow.filter((v, i) => v === i).length;
+  drawOrder(true); setScore(7, got, CYCLE.length); msg(7, got, CYCLE.length);
+}
+
+/* ---------- 8. Quiz ---------- */
+const QUIZ = [
+  ['Pourquoi la tomate est-elle un fruit ?', ['Elle vient d’une fleur et contient des graines', 'Elle est rouge', 'Elle pousse sur une plante', 'Elle est sucrée'], 0, 'Un fruit se forme à partir de la fleur (de l’ovaire) et contient au moins une graine.'],
+  ['Quels sont deux moyens naturels de transporter le pollen ?', ['Le vent et les insectes', 'La pluie et le soleil', 'Les racines et les feuilles'], 0, 'Le vent et les insectes (abeilles, papillons…) transportent le pollen des étamines au pistil.'],
+  ['À quoi sert l’ovaire pour la graine ?', ['Il la protège', 'Il la colore', 'Il fabrique le pollen'], 0, 'L’ovaire entoure et protège les graines ; il devient le fruit.'],
+  ['À quoi servent les pétales colorés ?', ['À attirer les insectes', 'À fabriquer les graines', 'À tenir la fleur à la tige'], 0, 'Leurs couleurs et leur odeur attirent les insectes qui transportent le pollen.'],
+  ['Quel est le rôle des sépales ?', ['Protéger la fleur quand elle est encore en bouton', 'Recevoir le pollen', 'Devenir le fruit'], 0, 'Les sépales, verts, entourent et protègent le bouton de fleur.'],
+  ['Qu’est-ce que le pédoncule ?', ['La petite tige qui relie la fleur (puis le fruit) à la plante', 'Le haut du pistil', 'Un sac de pollen'], 0, 'C’est la « queue » de la fleur, qu’on retrouve sur la pomme ou la cerise.'],
+  ['À quelle famille appartient la pomme de terre ?', ['Les tubercules', 'Les fruits', 'Les légumes-fleurs'], 0, 'La pomme de terre est un tubercule : elle pousse sous la terre et stocke des réserves.'],
+  ['Quelles parties de la fleur tombent après la fécondation ?', ['Les pétales et les étamines', 'L’ovaire et les ovules', 'Le pédoncule et le réceptacle'], 0, 'Les pétales et les étamines fanent, alors que l’ovaire se développe.'],
+];
+const qAnswered = {};
+function buildEx8() {
+  Object.keys(qAnswered).forEach(k => delete qAnswered[k]);
+  $('#quiz').innerHTML = QUIZ.map(([q, opts], i) => {
+    const order = shuffle(opts.map((_, k) => k));
+    return `<div class="q" id="q${i}"><p>${i + 1}. ${q}</p><div class="opts">${order.map(k => `<button class="opt" data-q="${i}" data-k="${k}">${opts[k]}</button>`).join('')}</div><p class="fb" hidden></p></div>`;
+  }).join('');
+  $('#res8').textContent = ''; setScore(8, 0, QUIZ.length);
+}
+$('#quiz').addEventListener('click', e => {
+  const b = e.target.closest('.opt'); if (!b) return;
+  const i = +b.dataset.q, k = +b.dataset.k; if (i in qAnswered) return;
+  const ok = k === QUIZ[i][2]; qAnswered[i] = ok;
+  const box = $('#q' + i);
+  box.querySelectorAll('.opt').forEach(o => { o.disabled = true; if (+o.dataset.k === QUIZ[i][2]) o.classList.add('ok'); });
+  if (!ok) b.classList.add('bad');
+  const fb = box.querySelector('.fb'); fb.hidden = false;
+  fb.innerHTML = (ok ? '<strong style="color:var(--ok)">Juste !</strong> ' : '<strong style="color:var(--bad)">Pas tout à fait.</strong> ') + QUIZ[i][3];
+  const got = Object.values(qAnswered).filter(Boolean).length;
+  setScore(8, got, QUIZ.length);
+  if (Object.keys(qAnswered).length === QUIZ.length) msg(8, got, QUIZ.length);
+});
+
+/* ---------- wiring ---------- */
+const TOTAL = FLOWER.length + [2,3,4,5].reduce((s, e) => s + SORTS[e].items.length, 0) + TROUS.length + CYCLE.length + QUIZ.length;
+const BUILD = { 1: buildEx1, 2: () => buildSort(2), 3: () => buildSort(3), 4: () => buildSort(4), 5: () => buildSort(5), 6: buildEx6, 7: buildEx7, 8: buildEx8 };
+const CHECK = { 1: checkEx1, 2: () => checkSort(2), 3: () => checkSort(3), 4: () => checkSort(4), 5: () => checkSort(5), 6: checkEx6, 7: checkEx7 };
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-check]'); if (c) CHECK[c.dataset.check]();
+  const r = e.target.closest('[data-reset]'); if (r) { BUILD[r.dataset.reset](); setScore(r.dataset.reset, 0, 0); }
+});
+Object.values(BUILD).forEach(f => f());
+setScore(1, 0, 0);
+</script>

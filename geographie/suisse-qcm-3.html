@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Suisse – QCM n° 3 · dernière révision</title>
+<style>
+:root{--bg:#f7f6f1;--paper:#fff;--ink:#23252c;--muted:#686b75;--line:#e2dfd3;--red:#d52b1e;--redSoft:#fde8e6;--ok:#2f8a4f;--okSoft:#e2f4e8;--bad:#c0392b;--badSoft:#fbe5e2}
+@media (prefers-color-scheme:dark){:root{--bg:#1b1c21;--paper:#25272e;--ink:#f1efe6;--muted:#a5a7b1;--line:#3b3d46;--red:#ff6b5e;--redSoft:#432220;--ok:#5fcf86;--okSoft:#1d3a27;--bad:#ff8a7a;--badSoft:#43221f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 "Trebuchet MS","Segoe UI",system-ui,sans-serif;padding:24px 16px 48px}
+main{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;gap:14px}
+.flag{width:44px;height:44px;background:var(--red);border-radius:6px;position:relative;flex:none}
+.flag::before,.flag::after{content:"";position:absolute;background:#fff;left:50%;top:50%;transform:translate(-50%,-50%)}
+.flag::before{width:26px;height:8px}.flag::after{width:8px;height:26px}
+h1{margin:0;font-size:1.5rem}
+.sub{color:var(--muted);margin:0}
+.progress{display:flex;gap:6px}
+.progress i{flex:1;height:10px;border-radius:99px;background:var(--line)}
+.progress i.ok{background:var(--ok)}.progress i.bad{background:var(--bad)}.progress i.now{background:var(--red)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.num{color:var(--red);font-weight:700}
+.q{font-size:1.2rem;font-weight:700;margin:0}
+.opts{display:flex;flex-direction:column;gap:8px}
+button{font:inherit;cursor:pointer;border-radius:10px}
+.opt{text-align:left;background:var(--bg);color:var(--ink);border:2px solid var(--line);padding:10px 14px}
+.opt:hover:not(:disabled){border-color:var(--red)}
+.opt.ok{border-color:var(--ok);background:var(--okSoft)}.opt.bad{border-color:var(--bad);background:var(--badSoft)}
+.opt:disabled{cursor:default}
+.expl{margin:0;padding:10px 14px;border-radius:10px;background:var(--redSoft)}
+.next{align-self:flex-end;background:var(--red);color:#fff;border:0;padding:10px 20px;font-weight:700}
+button:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.big{font-size:2.6rem;font-weight:800;margin:0;color:var(--red)}
+</style>
+</head>
+<body>
+<main>
+<header><div class="flag" aria-hidden="true"></div><div><h1>La Suisse · QCM n° 3 · dernière révision</h1><p class="sub">Géographie 7P · Choisis la bonne réponse.</p></div></header>
+<div class="progress" id="prog"></div>
+<div class="card" id="card"></div>
+</main>
+<script>
+const Q=[{"q": "Lequel de ces pays n'est PAS un voisin de la Suisse ?", "o": ["L'Allemagne", "La Belgique", "L'Autriche", "L'Italie"], "c": 1, "e": "La Belgique ne touche pas la Suisse. Les 4 pays limitrophes sont la France (ouest), l'Allemagne (nord), l'Autriche (est) et l'Italie (sud)."}, {"q": "Dans quelle partie de la Suisse se trouve le Jura ?", "o": ["Au nord-ouest, le long de la France", "Au sud, le long de l'Italie", "Au centre", "À l'est, le long de l'Autriche"], "c": 0, "e": "Le Jura forme une longue chaîne au nord-ouest du pays, le long de la frontière française."}, {"q": "Dans quelle région trouve-t-on les sommets de plus de 4000 m et les glaciers ?", "o": ["Le Jura", "Le Moyen-Pays", "Les Alpes"], "c": 2, "e": "Les Alpes sont de hautes montagnes pointues avec des glaciers et des vallées profondes. Elles couvrent 64 % du pays."}, {"q": "Où se trouve le lac de Constance ?", "o": ["Au sud-ouest, près de Genève", "Au nord-est, à la frontière avec l'Allemagne et l'Autriche", "Au sud, au Tessin", "Au centre, près de Berne"], "c": 1, "e": "Le lac de Constance est tout au nord-est. Le Moyen-Pays s'étire du Léman (sud-ouest) jusqu'au lac de Constance (nord-est)."}, {"q": "Où le Rhône prend-il sa source ?", "o": ["Dans le lac de Constance", "Au glacier du Rhône, en Valais", "À Genève", "Dans le Jura"], "c": 1, "e": "Le Rhône naît au glacier du Rhône en Valais, puis il traverse le Léman et sort de Suisse à Genève."}, {"q": "Quelle langue est la plus parlée en Suisse ?", "o": ["Le français", "L'italien", "L'allemand", "Le romanche"], "c": 2, "e": "L'allemand est parlé dans la plupart des cantons (Suisse alémanique). Le romanche est la langue la moins parlée."}, {"q": "Qu'appelle-t-on la Suisse romande ?", "o": ["La partie de la Suisse où l'on parle français", "La partie de la Suisse où l'on parle romanche", "Les cantons des Alpes", "Les cantons fondateurs de la Suisse"], "c": 0, "e": "La Suisse romande est la partie francophone, à l'ouest du pays. Le romanche, lui, est parlé aux Grisons."}, {"q": "Quel est le chef-lieu du canton de Vaud ?", "o": ["Lausanne", "Montreux", "Genève", "Fribourg"], "c": 0, "e": "Lausanne est le chef-lieu de Vaud, au bord du Léman."}, {"q": "Dans quel canton parle-t-on trois langues : allemand, romanche et italien ?", "o": ["Le Tessin", "Les Grisons", "Le Valais", "Berne"], "c": 1, "e": "Les Grisons sont le seul canton trilingue. C'est aussi le plus grand canton de Suisse, tout à l'est."}, {"q": "Quel canton entièrement francophone se trouve tout au bout du Léman, au sud-ouest ?", "o": ["Neuchâtel", "Le Jura", "Genève", "Le Valais"], "c": 2, "e": "Genève est tout au sud-ouest, entouré presque partout par la France. Le Valais est à l'autre bout du Léman, mais il est bilingue."}];let i=0,score=0,res=[];
+const card=document.getElementById("card"),prog=document.getElementById("prog");
+const mix=a=>{a=[...a];for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+function bar(){prog.innerHTML=Q.map((_,k)=>`<i class="${res[k]===true?"ok":res[k]===false?"bad":k===i?"now":""}"></i>`).join("")}
+function show(){bar();const q=Q[i];
+ card.innerHTML=`<span class="num">Question ${i+1} sur ${Q.length}</span><p class="q">${q.q}</p><div class="opts">${mix(q.o.map((t,k)=>({t,k}))).map(o=>`<button class="opt" data-k="${o.k}">${o.t}</button>`).join("")}</div>`;
+ card.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.k,b))}
+function answer(k,btn){const q=Q[i],good=k===q.c;res[i]=good;score+=good;
+ card.querySelectorAll(".opt").forEach(b=>{b.disabled=true;if(+b.dataset.k===q.c)b.classList.add("ok")});
+ if(!good)btn.classList.add("bad");
+ card.insertAdjacentHTML("beforeend",`<p class="expl"><b>${good?"Bravo !":"Pas tout à fait."}</b> ${q.e}</p><button class="next">${i<Q.length-1?"Question suivante":"Voir mon score"}</button>`);
+ bar();const n=card.querySelector(".next");n.focus();n.onclick=()=>{i++;i<Q.length?show():end()}}
+function end(){bar();const msg=score===Q.length?"Parfait, tu es prêt pour le test !":score>=7?"Très bien ! Relis les questions ratées.":"Relis ta fiche de révision et recommence.";
+ card.innerHTML=`<p class="big">${score} / ${Q.length}</p><p>${msg}</p><button class="next">Recommencer</button>`;
+ card.querySelector(".next").onclick=()=>{i=0;score=0;res=[];show()}}
+show();
+</script>
+</body>
+</html>

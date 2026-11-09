@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta name="robots" content="noindex"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiz n°2 · Fin de l'Empire romain</title>
+<style>
+:root{--bg:#f6f5f9;--paper:#fff;--ink:#221c2e;--muted:#5d5670;--line:#dcd7e6;--purple:#5a3486;--purple-soft:#efe8f7;--gold:#b27a14;--gold-soft:#fbf1dc;--ok:#2f7d4f;--ok-soft:#e3f4ea;--bad:#b23b3b;--bad-soft:#fbe6e6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Avenir Next","Segoe UI",system-ui,sans-serif;font-size:19px;line-height:1.5;padding:24px 16px 48px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1{font-family:Georgia,"Times New Roman",serif;color:var(--purple);font-size:30px;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.count{font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.q{font-size:22px;font-weight:700;margin:0}
+.opts{display:flex;flex-direction:column;gap:10px}
+button{font:inherit;cursor:pointer;border-radius:10px}
+.opt{text-align:left;background:var(--paper);border:2px solid var(--line);padding:12px 14px;color:var(--ink);display:flex;gap:12px;align-items:flex-start}
+.opt b{color:var(--purple);min-width:1.2em}
+.opt:hover:not(:disabled){border-color:var(--purple)}
+.opt:focus-visible,.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.opt.good{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:0;padding:12px 18px;font-weight:700;background:var(--purple);color:#fff}
+.btn.light{background:var(--purple-soft);color:var(--purple)}
+.hint{background:var(--gold-soft);border-radius:10px;padding:10px 14px}
+.fb{border-radius:10px;padding:12px 14px}
+.fb.ok{background:var(--ok-soft)} .fb.ko{background:var(--bad-soft)}
+.fb strong{display:block}
+.stars{font-size:48px;color:var(--gold);letter-spacing:6px}
+.score{font-size:28px;font-weight:700}
+ul{margin:0;padding-left:22px}
+[hidden]{display:none!important}
+</style></head><body>
+<div class="wrap">
+  <header><h1>Quiz n°2</h1><p class="sub">La fin de l'Empire romain · 16 questions. Lis bien la question, tu peux demander un indice.</p></header>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="card" id="quiz">
+    <div class="count" id="count"></div>
+    <p class="q" id="q"></p>
+    <div class="opts" id="opts"></div>
+    <div class="hint" id="hint" hidden></div>
+    <div class="fb" id="fb" hidden></div>
+    <div class="row">
+      <button class="btn light" id="hintBtn" type="button">Un indice ?</button>
+      <button class="btn" id="next" type="button" hidden>Question suivante</button>
+    </div>
+  </div>
+  <div class="card" id="end" hidden>
+    <div class="stars" id="stars"></div>
+    <div class="score" id="score"></div>
+    <p id="msg" style="margin:0"></p>
+    <div id="review"></div>
+    <div class="row"><button class="btn" id="again" type="button">Recommencer</button></div>
+  </div>
+</div>
+<script>
+const QS = [{"q": "Dans quelle direction se trouve l'Occident ?", "o": ["À l'Ouest", "À l'Est", "Au Nord", "Au Sud"], "a": 0, "h": "L'Orient, c'est là où le soleil se lève.", "e": "L'Occident, c'est l'Ouest. L'Orient, c'est l'Est."}, {"q": "Quels peuples attaquent l'Afrique romaine au IIIe siècle ?", "o": ["Les Francs", "Les Maures", "Les Huns", "Les Perses"], "a": 1, "h": "", "e": "Les Maures attaquent l'Afrique. Les Perses, eux, veulent reconquérir l'Orient."}, {"q": "En quelle année plusieurs peuples franchissent-ils le Rhin ?", "o": ["286", "330", "406", "476"], "a": 2, "h": "C'est juste avant le pillage de Rome en 410.", "e": "En 406, le Rhin est franchi par plusieurs peuples germains qui s'installent dans l'Empire."}, {"q": "Où s'installent les Vandales ?", "o": ["En Espagne, puis en Afrique", "En Grande-Bretagne", "À Constantinople", "En Asie centrale"], "a": 0, "h": "", "e": "Les Vandales s'installent d'abord en Espagne, puis en Afrique du Nord (autour de Carthage)."}, {"q": "Combien de fois Rome est-elle pillée au Ve siècle ?", "o": ["1 fois", "2 fois", "3 fois", "Jamais"], "a": 2, "h": "410, puis…", "e": "Rome est pillée 3 fois : en 410 par les Goths, puis en 455 et en 472."}, {"q": "Pourquoi Rome est-elle mal défendue ?", "o": ["Ses soldats sont mal payés et jaloux des Barbares", "Elle n'a pas de murs", "L'empereur est parti en vacances", "Les Romains ne savent pas se battre"], "a": 0, "h": "", "e": "Les soldats sont mal payés et jaloux des avantages donnés aux Barbares, alors ils défendent mal Rome."}, {"q": "Pourquoi l'Empire romain d'Orient survit-il ?", "o": ["Il est moins menacé et mieux organisé", "Il a plus de soldats que les Huns", "Les Barbares ne savent pas où il est", "Il est protégé par Attila"], "a": 0, "h": "", "e": "L'Orient est moins menacé et mieux administré. Il survit encore environ 1000 ans, avec la langue et la culture grecques."}, {"q": "Quelle langue parle-t-on surtout dans l'Empire romain d'Orient ?", "o": ["L'allemand", "Le grec", "Le français", "L'anglais"], "a": 1, "h": "", "e": "L'Orient garde la culture et la langue grecques."}, {"q": "Que veut dire « nomade », comme les Huns ?", "o": ["Qui vit toujours dans la même ville", "Qui se déplace tout le temps, sans maison fixe", "Qui vit sur un bateau", "Qui est très riche"], "a": 1, "h": "", "e": "Un peuple nomade se déplace sans arrêt, souvent à cheval, sans habiter un endroit fixe."}, {"q": "Avec qui les Romains s'allient-ils pour repousser les Huns ?", "o": ["Avec les Perses", "Avec les Gallo-Romains et les Barbares", "Avec les Égyptiens", "Avec personne"], "a": 1, "h": "", "e": "Les Romains doivent s'allier aux Gallo-Romains et aux peuples barbares pour repousser les Huns en Gaule."}, {"q": "Que font les Barbares après la chute de Rome en 476 ?", "o": ["Ils repartent chez eux", "Ils fondent de nouveaux royaumes", "Ils reconstruisent l'Empire romain", "Ils partent en Asie"], "a": 1, "h": "", "e": "Les Barbares prennent le pouvoir et fondent des royaumes : Wisigoths, Francs, Burgondes, Vandales…"}, {"q": "Quel peuple germain a donné son nom à la Suisse alémanique ?", "o": ["Les Francs", "Les Vandales", "Les Alamans", "Les Goths"], "a": 2, "h": "Écoute le début du mot « alémanique ».", "e": "Les Alamans → la Suisse alémanique et l'Allemagne. Les Burgondes → la Suisse romande et la Bourgogne."}, {"q": "Comment appelle-t-on l'âge de la pierre polie ?", "o": ["Le Paléolithique", "Le Néolithique", "L'âge du Fer", "L'Antiquité"], "a": 1, "h": "« Néo » veut dire « nouveau ».", "e": "Le Paléolithique, c'est la pierre taillée. Le Néolithique, c'est la pierre polie. Ensuite vient l'âge des Métaux."}, {"q": "Que vaut XIV en chiffres romains ?", "o": ["16", "14", "19", "41"], "a": 1, "h": "X = 10, et IV = ?", "e": "X = 10 et IV = 4, donc XIV = 14."}, {"q": "En quel siècle se trouve l'année 375 (arrivée des Huns) ?", "o": ["IIIe siècle", "IVe siècle", "Ve siècle", "XXXVe siècle"], "a": 1, "h": "Les centaines + 1.", "e": "375 → 3 + 1 = 4, donc le IVe siècle."}, {"q": "Qu'est-ce qui affaiblit le pouvoir de l'empereur au IIIe siècle ?", "o": ["Les luttes entre les armées qui veulent imposer leurs généraux", "Une grande épidémie", "L'arrivée d'Attila", "La construction du mur d'Hadrien"], "a": 0, "h": "", "e": "Les armées se battent entre elles pour mettre leur général au pouvoir. C'est l'anarchie."}];
+const OK=["Bravo !","Exact !","Super !","Bien joué !","Oui !","Parfait !"];
+let i=0, good=0, missed=[], order=[];
+const $=id=>document.getElementById(id);
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function show(){
+  const q=QS[i]; $("count").textContent="Question "+(i+1)+" / "+QS.length;
+  $("prog").style.width=(i/QS.length*100)+"%";
+  $("q").textContent=q.q; $("hint").hidden=true; $("fb").hidden=true; $("next").hidden=true;
+  $("hintBtn").hidden=!q.h; $("hint").textContent="💡 "+q.h;
+  const box=$("opts"); box.innerHTML=""; order=shuffle(q.o.map((t,k)=>k));
+  order.forEach((k,n)=>{const b=document.createElement("button");b.type="button";b.className="opt";
+    b.innerHTML="<b>"+"ABCD"[n]+"</b><span></span>";b.querySelector("span").textContent=q.o[k];
+    b.onclick=()=>answer(k,b);box.appendChild(b)});
+}
+function answer(k,btn){
+  const q=QS[i]; const btns=[...$("opts").children];
+  btns.forEach((b,n)=>{b.disabled=true;if(order[n]===q.a)b.classList.add("good")});
+  const fb=$("fb"); fb.hidden=false;
+  if(k===q.a){good++;fb.className="fb ok";fb.innerHTML="<strong>"+OK[i%OK.length]+"</strong>"}
+  else{btn.classList.add("wrong");missed.push(i);fb.className="fb ko";fb.innerHTML="<strong>Pas tout à fait. La bonne réponse est en vert.</strong>"}
+  const p=document.createElement("span");p.textContent=q.e;fb.appendChild(p);
+  $("hintBtn").hidden=true; $("next").hidden=false;
+  $("next").textContent=i===QS.length-1?"Voir mon score":"Question suivante"; $("next").focus();
+}
+$("hintBtn").onclick=()=>{$("hint").hidden=false};
+$("next").onclick=()=>{i++; if(i<QS.length) show(); else end()};
+function end(){
+  $("prog").style.width="100%"; $("quiz").hidden=true; $("end").hidden=false;
+  const pct=Math.round(good/QS.length*100);
+  $("stars").textContent=pct>=90?"★★★":pct>=70?"★★☆":"★☆☆";
+  $("score").textContent=good+" / "+QS.length+" ("+pct+" %)";
+  $("msg").textContent=pct>=90?"Excellent, tu connais très bien ta leçon !":pct>=70?"Très bien ! Relis les questions ci-dessous et recommence.":"Continue ! Relis ta fiche de synthèse, puis recommence le quiz.";
+  const r=$("review"); r.innerHTML="";
+  if(missed.length){const h=document.createElement("p");h.style.margin="0 0 6px";h.innerHTML="<strong>À revoir :</strong>";r.appendChild(h);
+    const ul=document.createElement("ul");missed.forEach(m=>{const li=document.createElement("li");li.textContent=QS[m].q+" → "+QS[m].o[QS[m].a];ul.appendChild(li)});r.appendChild(ul)}
+}
+$("again").onclick=()=>{i=0;good=0;missed=[];$("end").hidden=true;$("quiz").hidden=false;show()};
+show();
+</script></body></html>
