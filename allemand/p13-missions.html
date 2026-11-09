@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Missions d'allemand</title>
+<style>
+:root{
+  --bg:#f6f4ee; --paper:#fff; --ink:#22242c; --muted:#6a6c76; --line:#e2ded2;
+  --gold:#f2b705; --goldSoft:#fff2c2; --blue:#2c6fb7; --blueSoft:#e3eefa;
+  --ok:#2e8a4e; --okSoft:#e0f3e6; --bad:#c23b2e; --badSoft:#fbe4e1;
+  --font:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1a1b20; --paper:#25272e; --ink:#f0eee6; --muted:#a3a5ae; --line:#3a3c45;
+  --goldSoft:#3d3314; --blue:#7fb2ec; --blueSoft:#1f2f44; --ok:#62cf88; --okSoft:#1c3a27; --bad:#ff8a7b; --badSoft:#45221e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1b20; --paper:#25272e; --ink:#f0eee6; --muted:#a3a5ae; --line:#3a3c45;
+  --goldSoft:#3d3314; --blue:#7fb2ec; --blueSoft:#1f2f44; --ok:#62cf88; --okSoft:#1c3a27; --bad:#ff8a7b; --badSoft:#45221e; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:19px;line-height:1.45;padding:0 16px 48px}
+.wrap{max-width:760px;margin:0 auto}
+header{padding:26px 0 10px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px}
+h1{margin:0;font-size:1.9rem;line-height:1.1}
+h1 small{display:block;font-size:1rem;color:var(--muted);font-weight:600;margin-top:4px}
+.total{background:var(--goldSoft);border-radius:999px;padding:6px 16px;font-weight:800;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:10px;margin-top:14px}
+.day{all:unset;cursor:pointer;background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:2px;text-align:center;transition:transform .15s,border-color .15s}
+.day:hover,.day:focus-visible{transform:translateY(-2px);border-color:var(--gold)}
+.day.today{border-color:var(--gold);background:var(--goldSoft)}
+.day .ico{font-size:2rem;line-height:1.1}
+.day b{font-size:1.1rem}
+.day span{color:var(--muted);font-size:.85rem}
+.day .st{font-size:1.1rem;letter-spacing:2px;color:var(--gold)}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:20px;margin-top:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.top h2{margin:0;font-size:1.35rem}
+.back{all:unset;cursor:pointer;color:var(--blue);font-weight:700}
+.steps{display:flex;gap:6px;margin:10px 0 4px}
+.steps i{flex:1;height:8px;border-radius:99px;background:var(--line)}
+.steps i.on{background:var(--gold)} .steps i.done{background:var(--ok)}
+.prog{color:var(--muted);font-variant-numeric:tabular-nums}
+.consigne{color:var(--muted);margin:6px 0 14px}
+.q{font-size:1.45rem;font-weight:800;text-align:center;margin:10px 0 18px}
+.q .big{font-size:3rem;display:block}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.opt{all:unset;cursor:pointer;text-align:center;background:var(--blueSoft);border:2px solid transparent;border-radius:14px;padding:14px 10px;font-weight:700}
+.opt:hover{border-color:var(--blue)}
+.opt.ok{background:var(--okSoft);border-color:var(--ok)}
+.opt.bad{background:var(--badSoft);border-color:var(--bad);opacity:.7;cursor:default}
+.opt[disabled]{cursor:default}
+.fb{min-height:2.6em;margin-top:14px;text-align:center;font-weight:700}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+.fb small{display:block;color:var(--muted);font-weight:600}
+.btn{all:unset;cursor:pointer;background:var(--gold);color:#2b2000;font-weight:800;border-radius:999px;padding:10px 22px;display:inline-block}
+.btn.ghost{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+.center{text-align:center;margin-top:12px}
+.say{all:unset;cursor:pointer;font-size:2.6rem;background:var(--goldSoft);border-radius:50%;width:84px;height:84px;display:inline-grid;place-items:center}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:520px){.mem{grid-template-columns:repeat(3,1fr)}}
+.mc{all:unset;cursor:pointer;aspect-ratio:4/3;border-radius:12px;display:grid;place-items:center;text-align:center;padding:4px;font-weight:700;font-size:0;background:var(--blue);color:var(--ink);user-select:none}
+.mc::before{content:"?";font-size:2rem;color:#fff}
+.mc.up,.mc.done{font-size:.95rem}.mc.up::before,.mc.done::before{content:none}
+.mc.up{background:var(--blueSoft)} .mc.de.up{background:var(--goldSoft)}
+.mc.done{background:var(--okSoft);color:var(--ok);cursor:default}
+.line{min-height:58px;border:2px dashed var(--line);border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{all:unset;cursor:pointer;background:var(--blueSoft);border-radius:12px;padding:10px 14px;font-weight:800}
+.chip.placed{background:var(--okSoft);color:var(--ok);cursor:default}
+.chip.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.chip.shake{animation:none;outline:2px solid var(--bad)}}
+.result{text-align:center}
+.result .stars{font-size:3rem;color:var(--gold);letter-spacing:6px}
+.agenda{display:inline-block;background:var(--goldSoft);border-radius:12px;padding:8px 18px;font-size:1.3rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🇩🇪 Meine Woche auf Deutsch<small>Une mission d'allemand par jour · manuel p. 13 · 10 minutes</small></h1>
+    <div class="total" id="total">⭐ 0 / 15</div>
+  </header>
+  <main id="app"></main>
+</div>
+
+<script>
+/* ---------- Vocabulaire de la page 13 ---------- */
+const OLD = [["singen","chanter","🎤"],["schwimmen","nager","🏊"],["Musik hören","écouter de la musique","🎧"],["Fussball spielen","jouer au foot","⚽"],["Klavier spielen","jouer du piano","🎹"],["reiten","faire de l'équitation","🐴"],["joggen","faire du jogging","🏃"],["malen","peindre / dessiner","🎨"]];
+const NEW = [["Fahrrad fahren","faire du vélo","🚲"],["eine Serie sehen","regarder une série","📺"],["einen Film sehen","regarder un film","🎬"],["lange schlafen","faire la grasse matinée","😴"],["Freunde treffen","rencontrer des amis","👫"],["in die Schule gehen","aller à l'école","🏫"],["ins Kino gehen","aller au cinéma","🍿"],["telefonieren","téléphoner","📞"]];
+const ACT = OLD.concat(NEW);
+const DAYS = [["Montag","lundi"],["Dienstag","mardi"],["Mittwoch","mercredi"],["Donnerstag","jeudi"],["Freitag","vendredi"],["Samstag","samedi"],["Sonntag","dimanche"]];
+const MOM = [["am Morgen","le matin","🌅 7 h : je me lève."],["am Vormittag","le matin (la matinée)","☕ 10 h : la récréation."],["am Mittag","à midi","🍝 12 h : on mange."],["am Nachmittag","l'après-midi","☀️ 15 h : je joue dehors."],["am Abend","le soir","🌙 19 h : on soupe."],["am Wochenende","le week-end","🎉 Samedi et dimanche"]];
+const VERBS = [["Fahrrad","fahre","fährst","fährt","fahrst","fahrt","fahren"],["eine Serie","sehe","siehst","sieht","sehst","seht","sehen"],["lange","schlafe","schläfst","schläft","schlafst","schlaft","schlafen"],["Freunde","treffe","triffst","trifft","treffst","trefft","treffen"]];
+const AGENDA = [["Montag","🏊","schwimme",""],["Dienstag","🐴","reite",""],["Mittwoch","🚲","fahre","Fahrrad"],["Donnerstag","🎹","spiele","Klavier"],["Freitag","🍿","gehe","ins Kino"],["Samstag","⚽","spiele","Fussball"],["Sonntag","😴","schlafe","lange"],["Abend","🎬","sehe","einen Film"],["Nachmittag","👫","treffe","Freunde"]];
+
+/* ---------- Outils ---------- */
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = (a, n) => shuffle(a).slice(0, n);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let voice = null;
+function loadVoice(){ try{ const v = speechSynthesis.getVoices(); voice = v.find(x => /^de(-|_)DE/i.test(x.lang)) || v.find(x => /^de/i.test(x.lang)) || null; }catch(e){} }
+try{ loadVoice(); speechSynthesis.onvoiceschanged = loadVoice; }catch(e){}
+const canSpeak = () => { try{ return "speechSynthesis" in window; }catch(e){ return false; } };
+function say(t){ try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "de-DE"; if (voice) u.voice = voice; u.rate = .85; speechSynthesis.speak(u); }catch(e){} }
+
+const KEY = "louis-allemand-semaine-p13";
+let best = {};
+try{ best = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; }catch(e){ best = {}; }
+function saveBest(id, s){ if (!best[id] || s > best[id]) best[id] = s; try{ localStorage.setItem(KEY, JSON.stringify(best)); }catch(e){} }
+const starsOf = p => p >= 90 ? 3 : p >= 70 ? 2 : 1;
+const starTxt = n => "★".repeat(n) + "☆".repeat(3 - n);
+function updTotal(){ $("#total").textContent = "⭐ " + Object.values(best).reduce((a, b) => a + b, 0) + " / 15"; }
+
+/* ---------- Les 5 missions ---------- */
+const PLAN = [
+  {id:"montag", de:"Montag", fr:"lundi", ico:"🎵", name:"Les loisirs que je connais", steps:[s_ecoute(OLD, "Écoute et trouve"), s_memory(OLD), s_fr2de(OLD, "Comment dit-on en allemand ?")]},
+  {id:"dienstag", de:"Dienstag", fr:"mardi", ico:"📅", name:"Les jours et les moments", steps:[s_order("Remets les jours dans l'ordre, de lundi à dimanche.", DAYS.map(d => d[0]), true), s_order("Remets la journée dans l'ordre, du matin au soir.", MOM.slice(0, 5).map(m => m[0]), true), s_quand()]},
+  {id:"mittwoch", de:"Mittwoch", fr:"mercredi", ico:"🚲", name:"Les nouvelles activités", steps:[s_ecoute(NEW, "Écoute et trouve"), s_umlaut(), s_memory(NEW)]},
+  {id:"donnerstag", de:"Donnerstag", fr:"jeudi", ico:"📝", name:"Je fais des phrases", steps:[s_agenda(), s_build(3)]},
+  {id:"freitag", de:"Freitag", fr:"vendredi", ico:"🏆", name:"Le grand test", steps:[s_test(), s_build(2)]}
+];
+
+function todayId(){ const d = new Date().getDay(); return ["", "montag", "dienstag", "mittwoch", "donnerstag", "freitag", ""][d] || ""; }
+function home(){
+  updTotal(); try{ history.replaceState(null, "", location.pathname + location.search); }catch(e){}
+  const t = todayId();
+  app.innerHTML = `<p class="consigne">Une mission par jour, environ 10 minutes. Chaque mission rapporte jusqu'à 3 étoiles. ${t ? "La mission du jour est en jaune." : ""}</p>
+  <div class="days">${PLAN.map(d => `<button class="day${d.id === t ? " today" : ""}" data-id="${d.id}"><span class="ico">${d.ico}</span><b>${d.de}</b><span>${d.fr} · ${d.name}</span><span class="st">${best[d.id] ? starTxt(best[d.id]) : "☆☆☆"}</span></button>`).join("")}</div>`;
+  app.querySelectorAll(".day").forEach(b => b.onclick = () => startDay(b.dataset.id));
+}
+
+let D, stepIdx, scores;
+function startDay(id){
+  D = PLAN.find(p => p.id === id); if (!D) return home();
+  try{ history.replaceState(null, "", "#" + id); }catch(e){}
+  stepIdx = 0; scores = []; runStep(); window.scrollTo(0, 0);
+}
+function runStep(){ D.steps[stepIdx](pct => { scores.push(pct); stepIdx++; stepIdx < D.steps.length ? runStep() : endDay(); }); }
+function frame(inner){
+  app.innerHTML = `<div class="card"><div class="top"><h2>${D.ico} ${D.de} · ${D.name}</h2><button class="back">← Toutes les missions</button></div>
+    <div class="steps">${D.steps.map((s, i) => `<i class="${i < stepIdx ? "done" : i === stepIdx ? "on" : ""}"></i>`).join("")}</div>
+    <div class="prog">Étape ${stepIdx + 1} / ${D.steps.length}</div>${inner}</div>`;
+  app.querySelector(".back").onclick = () => { try{ speechSynthesis.cancel(); }catch(e){} home(); };
+}
+function endDay(){
+  const pct = scores.reduce((a, b) => a + b, 0) / scores.length, s = starsOf(pct);
+  saveBest(D.id, s); updTotal();
+  const msg = s === 3 ? "Super, Louis ! Toll gemacht! 🎉" : s === 2 ? "Bravo ! Encore un essai pour 3 étoiles ?" : "C'est un bon début. Refais la mission, tu vas progresser !";
+  app.innerHTML = `<div class="card result"><h2>${D.ico} ${D.de} terminé !</h2><div class="stars">${starTxt(s)}</div><p><b>${msg}</b></p>
+    <p class="prog">${Math.round(pct)} % de bonnes réponses · Note tes étoiles dans Notion (« Étoiles gagnées »).</p>${missHtml()}
+    <p><button class="btn" id="again">Refaire</button> &nbsp; <button class="btn ghost" id="home">Toutes les missions</button></p></div>`;
+  $("#again").onclick = () => startDay(D.id); $("#home").onclick = home;
+}
+let MISS = [];
+function missHtml(){ const m = [...new Set(MISS)]; MISS = []; return m.length ? `<p><b>Mots à revoir :</b> ${m.map(esc).join(" · ")}</p>` : ""; }
+
+/* Quiz : 1 point au 1er essai, ½ point au 2e */
+function quiz(consigne, qs, done, oneTry){
+  let i = 0, pts = 0;
+  function show(){
+    const q = qs[i]; let tries = 0, over = false;
+    frame(`<p class="consigne">${consigne}</p><div class="prog">Question ${i + 1} / ${qs.length}</div>
+      <div class="q">${q.prompt}</div><div class="opts">${shuffle(q.opts).map(o => `<button class="opt" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>
+      <div class="fb" id="fb"></div><div class="center" id="nx"></div>`);
+    const sb = app.querySelector(".say"); if (sb){ sb.onclick = () => say(q.say); setTimeout(() => say(q.say), 300); }
+    const next = () => { $("#nx").innerHTML = `<button class="btn">Suivant →</button>`; $("#nx .btn").onclick = () => { i++; i < qs.length ? show() : done(pts / qs.length * 100); }; };
+    app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      if (over || b.classList.contains("bad")) return;
+      tries++;
+      if (b.dataset.v === q.ans){
+        over = true; b.classList.add("ok"); pts += tries === 1 ? 1 : .5; if (tries > 1) MISS.push(q.miss || q.ans);
+        $("#fb").className = "fb ok"; $("#fb").innerHTML = (tries === 1 ? "Richtig ! 👍" : "Oui, c'est ça !") + (q.explain ? `<small>${q.explain}</small>` : "");
+        if (q.after) say(q.after); app.querySelectorAll(".opt").forEach(x => x.disabled = true); next();
+      } else if (tries === 1 && !oneTry){
+        b.classList.add("bad"); $("#fb").className = "fb bad"; $("#fb").innerHTML = "Pas tout à fait… Essaie encore !" + (q.hint ? `<small>Indice : ${q.hint}</small>` : "");
+      } else {
+        over = true; b.classList.add("bad"); MISS.push(q.miss || q.ans);
+        app.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (x.dataset.v === q.ans) x.classList.add("ok"); });
+        $("#fb").className = "fb bad"; $("#fb").innerHTML = `La bonne réponse : ${esc(q.ans)}` + (q.explain ? `<small>${q.explain}</small>` : "");
+        if (q.after) say(q.after); next();
+      }
+    });
+  }
+  show();
+}
+
+/* ---------- Étapes ---------- */
+function qEcoute(a, pool){
+  return { prompt: canSpeak() ? `<button class="say" title="Réécouter">🔊</button><br><small class="prog">Clique sur 🔊 pour réécouter</small>` : `<span class="big">${a[2]}</span>${esc(a[0])}`,
+    say:a[0], after:a[0], opts:[a[1], ...pick(pool.filter(x => x !== a), 3).map(x => x[1])], ans:a[1], explain:`${a[2]} ${a[0]} = ${a[1]}`, miss:a[0] };
+}
+function s_ecoute(pool, title){ return done => quiz(`${title} : écoute le mot allemand et clique sur sa traduction.`, pick(pool, 6).map(a => qEcoute(a, pool)), done); }
+function s_fr2de(pool, title){ return done => quiz(title, pick(pool, 5).map(a => ({ prompt:`<span class="big">${a[2]}</span>« ${esc(a[1])} »`, opts:[a[0], ...pick(pool.filter(x => x !== a), 3).map(x => x[0])], ans:a[0], after:a[0], miss:a[0] })), done); }
+function s_memory(pool){
+  return done => {
+    const pairs = pick(pool, 6); let cards = [];
+    pairs.forEach((p, k) => { cards.push({k, t:p[2] + " " + p[0], de:true, w:p[0]}); cards.push({k, t:p[1]}); });
+    cards = shuffle(cards); let open = [], found = 0, moves = 0, lock = false;
+    frame(`<p class="consigne">Memory : retourne une carte allemande (jaune) et sa traduction (bleue).</p><div class="prog" id="mv">Essais : 0</div>
+      <div class="mem">${cards.map((c, n) => `<button class="mc${c.de ? " de" : ""}" data-n="${n}">${esc(c.t)}</button>`).join("")}</div>`);
+    app.querySelectorAll(".mc").forEach(b => b.onclick = () => {
+      const c = cards[b.dataset.n];
+      if (lock || b.classList.contains("up") || b.classList.contains("done")) return;
+      b.classList.add("up"); if (c.de) say(c.w); open.push(b);
+      if (open.length === 2){
+        moves++; $("#mv").textContent = "Essais : " + moves;
+        const [a, d] = open.map(x => cards[x.dataset.n]);
+        if (a.k === d.k){ open.forEach(x => x.classList.add("done")); open = []; found++;
+          if (found === 6) setTimeout(() => done(moves <= 9 ? 100 : moves <= 13 ? 75 : 50), 700);
+        } else { lock = true; setTimeout(() => { open.forEach(x => x.classList.remove("up")); open = []; lock = false; }, 1100); }
+      }
+    });
+  };
+}
+/* Remettre dans l'ordre (jours, moments, mots d'une phrase) */
+function orderGame(consigne, items, done, prompt, speakEach){
+  const L = shuffle(items.map((t, i) => ({t, i}))); let pos = 0, err = 0;
+  frame(`<p class="consigne">${consigne}</p>${prompt ? `<div class="q">${prompt}</div>` : ""}<div class="line" id="ln"></div><div class="chips">${L.map((c, n) => `<button class="chip" data-n="${n}">${esc(c.t)}</button>`).join("")}</div><div class="fb" id="fb"></div><div class="center" id="nx"></div>`);
+  app.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+    const c = L[b.dataset.n]; if (b.classList.contains("placed")) return;
+    if (c.i === pos){
+      b.classList.add("placed"); const s = document.createElement("span"); s.className = "chip placed"; s.textContent = c.t; $("#ln").appendChild(s);
+      if (speakEach) say(c.t); pos++;
+      if (pos === items.length){ $("#fb").className = "fb ok"; $("#fb").textContent = err === 0 ? "Parfait ! 🎉" : "Bravo, c'est juste !";
+        if (!speakEach) say(items.join(" ").replace(/ ([.?!])/g, "$1"));
+        $("#nx").innerHTML = `<button class="btn">Suivant →</button>`; $("#nx .btn").onclick = () => done(Math.max(30, 100 - err * 10)); }
+    } else { err++; b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); $("#fb").className = "fb bad"; $("#fb").textContent = "Pas encore celui-là… Lequel vient ensuite ?"; }
+  });
+}
+function s_order(consigne, items, speakEach){ return done => orderGame(consigne, items, done, "", speakEach); }
+function s_quand(){
+  return done => {
+    const all = MOM.map(m => m[0]); const dn = DAYS.map(d => d[0]);
+    let qs = pick(MOM, 3).map(m => ({ prompt:esc(m[2]), opts:[m[0], ...pick(all.filter(x => x !== m[0]), 3)], ans:m[0], after:m[0], explain:`${m[0]} = ${m[1]}` }));
+    pick([0,1,2,3,4,5,6], 2).forEach(k => { const prev = DAYS[(k + 6) % 7][0];
+      qs.push({ prompt:`Quel jour vient <u>avant</u> ${DAYS[k][0]} ?`, opts:[prev, ...pick(dn.filter(x => x !== prev && x !== DAYS[k][0]), 3)], ans:prev, after:prev, hint:"Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag, Sonntag" }); });
+    pick(DAYS, 2).forEach(d => qs.push({ prompt:`Comment dit-on « ${d[1]} » ?`, opts:[d[0], ...pick(dn.filter(x => x !== d[0]), 3)], ans:d[0], after:d[0] }));
+    quiz("Quand ? Choisis la bonne réponse en allemand.", shuffle(qs), done);
+  };
+}
+function qVerb(v, who){
+  const [obj, ich, du, er, f1, f2, inf] = v;
+  return who === "du" ? { prompt:`Du ____ ${obj}.<br><small class="prog">(${inf})</small>`, opts:[du, f1, f2, inf], ans:du, after:`Du ${du} ${obj}.`, hint:"Avec du, la voyelle change !", explain:`du ${du}` }
+                      : { prompt:`Er ____ ${obj}.<br><small class="prog">(${inf})</small>`, opts:[er, f2, f1, ich], ans:er, after:`Er ${er} ${obj}.`, hint:"Avec er/sie aussi, la voyelle change.", explain:`er/sie ${er}` };
+}
+function s_umlaut(){
+  return done => {
+    let qs = []; VERBS.forEach(v => { qs.push(qVerb(v, "du")); qs.push(qVerb(v, "er")); });
+    qs = pick(qs, 5);
+    qs.push({ prompt:"Ich ____ Fahrrad.<br><small class=\"prog\">(fahren)</small>", opts:["fahre","fähre","fährst","fahrt"], ans:"fahre", after:"Ich fahre Fahrrad.", hint:"Avec ich, pas d'umlaut !", explain:"Avec ich, la voyelle ne change pas." });
+    quiz("Chasse aux umlauts : complète avec la bonne forme du verbe.", shuffle(qs), done);
+  };
+}
+function qAgenda(s){
+  const [w, e, v, r] = s; const when = "Am " + w, rest = r ? " " + r : "", good = `${when} ${v} ich${rest}.`;
+  return { prompt:`<span class="agenda">${e} ${when}</span><br><small class="prog">Quelle phrase est juste ?</small>`, opts:[good, `${when} ich ${v}${rest}.`, `Ich am ${w} ${v}${rest}.`], ans:good, after:good,
+    hint:"Le verbe est en 2e position : Am … + VERBE + ich.", explain:`${when} (1) · ${v} (2 = le verbe) · ich…`, miss:good };
+}
+function s_agenda(){ return done => quiz("Mon agenda : choisis la phrase juste. Le verbe est à la 2e place !", pick(AGENDA, 5).map(qAgenda), done); }
+const SENT = [["Le lundi, je nage.",["Am Montag","schwimme","ich","."]],["Le samedi, je joue au foot.",["Am Samstag","spiele","ich","Fussball","."]],["Le soir, je regarde un film.",["Am Abend","sehe","ich","einen Film","."]],["Le week-end, je fais la grasse matinée.",["Am Wochenende","schlafe","ich","lange","."]],["Que fais-tu le vendredi ?",["Was","machst","du","am Freitag","?"]],["L'après-midi, je rencontre des amis.",["Am Nachmittag","treffe","ich","Freunde","."]],["Le dimanche, je vais au cinéma.",["Am Sonntag","gehe","ich","ins Kino","."]],["Le mercredi, je fais du vélo.",["Am Mittwoch","fahre","ich","Fahrrad","."]]];
+function s_build(n){
+  return done => {
+    const list = pick(SENT, n); let k = 0; const res = [];
+    const one = () => orderGame(`Construis la phrase (${k + 1} / ${n}). Clique les morceaux dans le bon ordre.`, list[k][1], p => { res.push(p); k++; k < n ? one() : done(res.reduce((a, b) => a + b, 0) / n); }, `« ${esc(list[k][0])} »`, false);
+    one();
+  };
+}
+function s_test(){
+  return done => {
+    const dn = DAYS.map(d => d[0]), mom = MOM.map(m => m[0]);
+    let qs = pick(ACT, 4).map(a => ({ prompt:`<span class="big">${a[2]}</span>${esc(a[0])}`, opts:[a[1], ...pick(ACT.filter(x => x !== a), 3).map(x => x[1])], ans:a[1], after:a[0], miss:a[0] }));
+    qs = qs.concat(pick(ACT, 3).map(a => ({ prompt:`« ${esc(a[1])} »`, opts:[a[0], ...pick(ACT.filter(x => x !== a), 3).map(x => x[0])], ans:a[0], after:a[0], miss:a[0] })));
+    pick(DAYS, 1).forEach(d => qs.push({ prompt:`« ${d[1]} »`, opts:[d[0], ...pick(dn.filter(x => x !== d[0]), 3)], ans:d[0], after:d[0], miss:d[0] }));
+    pick(MOM, 1).forEach(m => qs.push({ prompt:esc(m[2]), opts:[m[0], ...pick(mom.filter(x => x !== m[0]), 3)], ans:m[0], after:m[0], miss:m[0] }));
+    pick(VERBS, 2).forEach((v, i) => qs.push(qVerb(v, i ? "er" : "du")));
+    qs.push(qAgenda(pick(AGENDA, 1)[0]));
+    quiz("Le grand test : une seule chance par question. Concentre-toi !", shuffle(qs), done, true);
+  };
+}
+
+/* Ouverture directe d'un jour : …#montag, #dienstag, #mittwoch, #donnerstag, #freitag */
+const h = (location.hash || "").slice(1).toLowerCase();
+PLAN.some(p => p.id === h) ? (updTotal(), startDay(h)) : home();
+</script>
+</body>
+</html>
