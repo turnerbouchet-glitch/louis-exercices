@@ -101,11 +101,12 @@ const app = $("#app");
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = (a, n) => shuffle(a).slice(0, n);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function pickVoice(){try{const v=speechSynthesis.getVoices().filter(x=>/^de/i.test(x.lang.replace("_","-")));return v.find(x=>x.name.indexOf("Anna")===0)||v.find(x=>/premium|enhanced|natural/i.test(x.name))||v.find(x=>/^de-DE/i.test(x.lang.replace("_","-")))||v[0]||null}catch(e){return null}}
 let voice = null;
-function loadVoice(){ try{ const v = speechSynthesis.getVoices(); voice = v.find(x => /^de(-|_)DE/i.test(x.lang)) || v.find(x => /^de/i.test(x.lang)) || null; }catch(e){} }
+function loadVoice(){ try{ const v = speechSynthesis.getVoices(); voice = pickVoice(); }catch(e){} }
 try{ loadVoice(); speechSynthesis.onvoiceschanged = loadVoice; }catch(e){}
 const canSpeak = () => { try{ return "speechSynthesis" in window; }catch(e){ return false; } };
-function say(t){ try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "de-DE"; if (voice) u.voice = voice; u.rate = .85; speechSynthesis.speak(u); }catch(e){} }
+function say(t){ try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "de-DE"; if (voice) u.voice = voice; u.rate = .68; speechSynthesis.speak(u); }catch(e){} }
 
 const KEY = "louis-allemand-semaine-p13";
 let best = {};

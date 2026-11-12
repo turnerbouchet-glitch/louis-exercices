@@ -85,10 +85,11 @@ input[type=text]:focus{outline:none;border-color:var(--blue)}
 
 <script>
 // ---------- Voix anglaise ----------
+function pickVoice(){try{const v=speechSynthesis.getVoices().filter(x=>/^en/i.test(x.lang.replace("_","-")));return v.find(x=>x.name.indexOf("Daniel")===0)||v.find(x=>/premium|enhanced|natural/i.test(x.name))||v.find(x=>/^en-GB/i.test(x.lang.replace("_","-")))||v[0]||null}catch(e){return null}}
 let voice = null;
-function loadVoice(){ try{ const v = speechSynthesis.getVoices(); voice = v.find(x => /^en(-|_)GB/i.test(x.lang)) || v.find(x => /^en/i.test(x.lang)) || null; }catch(e){} }
+function loadVoice(){ try{ const v = speechSynthesis.getVoices(); voice = pickVoice(); }catch(e){} }
 try{ loadVoice(); speechSynthesis.onvoiceschanged = loadVoice; }catch(e){}
-function say(t, rate){ try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "en-GB"; if (voice) u.voice = voice; u.rate = rate || .85; speechSynthesis.speak(u); }catch(e){} }
+function say(t, rate){ try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "en-GB"; if (voice) u.voice = voice; u.rate = rate || .66; speechSynthesis.speak(u); }catch(e){} }
 
 function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
@@ -237,9 +238,9 @@ function renderSpell(p){
       '<div class="row"><input type="text" id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Écris le mot"><button class="btn" id="ok">Vérifier</button></div>' +
       '<div class="fb" id="fb"></div><div class="row" id="row"></div></div>';
     const inp = document.getElementById("inp"), fb = document.getElementById("fb");
-    document.getElementById("play").onclick = () => say(spelled, .7);
+    document.getElementById("play").onclick = () => say(spelled, .6);
     document.getElementById("slow").onclick = () => say(spelled, .45);
-    setTimeout(() => say(spelled, .7), 300);
+    setTimeout(() => say(spelled, .6), 300);
     function check(){
       const v = inp.value.trim().toLowerCase();
       if (!v) return;
