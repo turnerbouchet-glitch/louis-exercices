@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English Unit 1 – Révision</title>
+<style>
+  :root{
+    --bg:#f3f7ff; --card:#ffffff; --ink:#1d2340; --muted:#5b6385;
+    --blue:#3b6cf6; --blue-soft:#e3ebff; --green:#1f9d55; --green-soft:#dcf5e6;
+    --red:#d64545; --red-soft:#fde4e4; --gold:#f2b705; --line:#d9e0f2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-size:19px;line-height:1.45}
+  header{background:var(--blue);color:#fff;padding:14px 16px}
+  header .row{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  header h1{margin:0;font-size:24px}
+  .stars{background:rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-weight:700}
+  main{max-width:760px;margin:0 auto;padding:16px}
+  .steps{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 14px}
+  .step{flex:1;min-width:90px;text-align:center;font-size:14px;padding:6px 4px;border-radius:10px;background:#e6eaf5;color:var(--muted)}
+  .step.on{background:var(--blue);color:#fff;font-weight:700}
+  .step.done{background:var(--green-soft);color:var(--green);font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 4px 14px rgba(30,50,120,.06)}
+  .kicker{color:var(--muted);font-size:15px;margin-bottom:4px}
+  h2{margin:0 0 6px;font-size:24px}
+  .intro{color:var(--muted);margin:0 0 14px}
+  .prompt{font-size:22px;margin:10px 0 14px}
+  .big{font-size:64px;line-height:1;margin:6px 0}
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+  .opts.emoji button{font-size:46px;padding:14px}
+  button{font:inherit;cursor:pointer;border-radius:14px;border:2px solid var(--line);background:#fff;color:var(--ink);padding:12px 14px}
+  button:hover:not(:disabled){border-color:var(--blue);background:var(--blue-soft)}
+  button:disabled{cursor:default}
+  .ok{border-color:var(--green)!important;background:var(--green-soft)!important}
+  .ko{border-color:var(--red)!important;background:var(--red-soft)!important;opacity:.7}
+  .tool{border:none;background:var(--blue-soft);color:var(--blue);font-weight:700;padding:10px 14px;margin:0 8px 8px 0}
+  .main-btn{background:var(--blue);color:#fff;border:none;font-weight:700;padding:12px 22px}
+  .main-btn:hover{background:#2c56d4!important;color:#fff}
+  .fb{margin-top:14px;padding:12px 14px;border-radius:12px;display:none}
+  .fb.good{display:block;background:var(--green-soft)}
+  .fb.hint{display:block;background:#fff6d8}
+  .fb.bad{display:block;background:var(--red-soft)}
+  .next{margin-top:14px;text-align:right}
+  .slots{display:flex;gap:6px;flex-wrap:wrap;min-height:58px;margin:8px 0 12px}
+  .slot{width:48px;height:54px;border-radius:10px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;background:#fafbff}
+  .slot.full{border-style:solid;border-color:var(--blue);cursor:pointer}
+  .tiles{display:flex;gap:8px;flex-wrap:wrap}
+  .tile{width:52px;height:54px;font-size:26px;font-weight:700;padding:0}
+  .hidden-word{color:var(--muted);font-style:italic}
+  .end{text-align:center}
+  .end .score{font-size:44px;font-weight:800;color:var(--blue);margin:8px 0}
+  .review{text-align:left;background:#fafbff;border:1px solid var(--line);border-radius:12px;padding:10px 16px;margin:14px 0}
+  .small{font-size:15px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="row"><h1>🇬🇧 English · Unit 1</h1><div class="stars" id="stars">⭐ 0</div></div></header>
+<main>
+  <div class="steps" id="steps"></div>
+  <div class="card" id="card"></div>
+  <p class="small">⭐ = juste du premier coup. Si tu te trompes, tu as un indice et un 2e essai.</p>
+</main>
+<script>
+const SECTIONS = [
+  {title:"Pets", emoji:"🐾", intro:"Écoute le mot 🔊, puis clique sur le bon animal.", questions:[
+    {say:"cat", opts:["🐱","🐶","🐰"], answer:"🐱", hint:"Il fait « miaou ».", explain:"cat = chat", label:"cat (chat)"},
+    {say:"dog", opts:["🐶","🐟","🐹"], answer:"🐶", hint:"Il fait « ouaf ».", explain:"dog = chien", label:"dog (chien)"},
+    {say:"fish", opts:["🐭","🐟","🐱"], answer:"🐟", hint:"Il vit dans l'eau.", explain:"fish = poisson", label:"fish (poisson)"},
+    {say:"hamster", opts:["🐹","🐰","🐶"], answer:"🐹", hint:"C'est presque le même mot qu'en français !", explain:"hamster = hamster", label:"hamster"},
+    {say:"mouse", opts:["🐰","🐭","🐟"], answer:"🐭", hint:"Elle est toute petite et a peur du chat.", explain:"mouse = souris", label:"mouse (souris)"},
+    {say:"rabbit", opts:["🐹","🐱","🐰"], answer:"🐰", hint:"Il a de grandes oreilles.", explain:"rabbit = lapin", label:"rabbit (lapin)"}
+  ]},
+  {title:"Hello and goodbye", emoji:"👋", intro:"Lis la situation. Que dis-tu en anglais ?", questions:[
+    {prompt:"⏰ 7 h 30. Tu dis bonjour à papa au petit-déjeuner.", opts:["Good morning.","Good evening.","Good night."], answer:"Good morning.", hint:"Morning = le matin, jusqu'à midi.", explain:"Le matin, on dit Good morning.", label:"Good morning (le matin)"},
+    {prompt:"⏰ 14 h. Tu arrives au cours de natation.", opts:["Good night.","Good afternoon.","Good morning."], answer:"Good afternoon.", hint:"After noon = après midi.", explain:"L'après-midi, on dit Good afternoon.", label:"Good afternoon (l'après-midi)"},
+    {prompt:"⏰ 20 h. Tu arrives à une fête chez tes cousins.", opts:["Good evening.","Good night.","Good afternoon."], answer:"Good evening.", hint:"Tu arrives : tu dis bonsoir, pas « bonne nuit ».", explain:"Le soir, quand on arrive, on dit Good evening.", label:"Good evening (le soir, en arrivant)"},
+    {prompt:"🛏️ Tu éteins la lumière pour dormir.", opts:["Good evening.","Good morning.","Good night."], answer:"Good night.", hint:"Night = la nuit.", explain:"Avant de dormir, on dit Good night.", label:"Good night (avant de dormir)"},
+    {prompt:"⚽ Le match est fini. Tu quittes ton copain.", opts:["Hello.","Goodbye.","Good morning."], answer:"Goodbye.", hint:"Tu pars : c'est « au revoir ».", explain:"Goodbye = au revoir.", label:"Goodbye (au revoir)"},
+    {prompt:"🙂 Tu croises un copain dans la cour. Tu dis « salut ».", opts:["Hi!","Good night.","Goodbye."], answer:"Hi!", hint:"C'est le mot le plus court.", explain:"Hi! = salut (entre copains).", label:"Hi (salut)"}
+  ]},
+  {title:"Dialogue", emoji:"💬", intro:"Quelqu'un te parle. Choisis la bonne réponse.", questions:[
+    {prompt:"« What's your name? »", say:"What's your name?", opts:["My name's Louis.","I'm fine, thanks.","Goodbye!"], answer:"My name's Louis.", hint:"Name = nom. On te demande comment tu t'appelles.", explain:"What's your name? = Comment t'appelles-tu ? → My name's Louis.", label:"What's your name? → My name's…"},
+    {prompt:"« How are you? »", say:"How are you?", opts:["I'm ten.","I'm fine, thanks.","Hello!"], answer:"I'm fine, thanks.", hint:"On te demande comment tu vas.", explain:"How are you? = Comment vas-tu ? → I'm fine, thanks. (Je vais bien, merci.)", label:"How are you? → I'm fine, thanks."},
+    {prompt:"« How do you spell cat? »", say:"How do you spell cat?", opts:["It's a cat.","Cool!","C - A - T."], answer:"C - A - T.", hint:"Spell = épeler : dire les lettres.", explain:"How do you spell…? = Comment ça s'écrit ? On dit les lettres : C - A - T.", label:"How do you spell…? → les lettres"},
+    {prompt:"« This is my rabbit. His name's Bobby. »", say:"This is my rabbit. His name's Bobby.", opts:["Cool!","Good night.","No."], answer:"Cool!", hint:"Tu trouves ça génial !", explain:"Cool! = génial !", label:"Cool! (génial)"},
+    {prompt:"« Hello! »", say:"Hello!", opts:["Goodbye!","Hi!","Fine."], answer:"Hi!", hint:"On te dit bonjour : réponds bonjour.", explain:"Hello! → Hi! (bonjour → salut).", label:"Hello → Hi"},
+    {prompt:"« See you! »", say:"See you!", opts:["Goodbye!","Good morning!","My name's Louis."], answer:"Goodbye!", hint:"See you = à plus tard. Ton copain s'en va.", explain:"See you! = à plus ! → Goodbye! (au revoir).", label:"See you! → Goodbye!"}
+  ]},
+  {title:"Spell it!", emoji:"🔤", intro:"Écoute le mot 🔊, puis clique sur les lettres dans le bon ordre.", questions:[
+    {type:"spell", word:"dog", clue:"🐶 chien", label:"dog"},
+    {type:"spell", word:"fish", clue:"🐟 poisson", label:"fish"},
+    {type:"spell", word:"mouse", clue:"🐭 souris", label:"mouse"},
+    {type:"spell", word:"rabbit", clue:"🐰 lapin (2 fois la même lettre !)", label:"rabbit"},
+    {type:"spell", word:"hello", clue:"👋 bonjour", label:"hello"},
+    {type:"spell", word:"great", clue:"🤩 super", label:"great"}
+  ]},
+  {title:"Countries", emoji:"🌍", intro:"Regarde le drapeau. Comment s'appelle ce pays en anglais ?", questions:[
+    {big:"🇨🇭", opts:["Switzerland","Sweden","Spain"], answer:"Switzerland", hint:"C'est notre pays !", explain:"Suisse = Switzerland.", label:"Switzerland (Suisse)"},
+    {big:"🇩🇪", opts:["Britain","Germany","Portugal"], answer:"Germany", hint:"Le pays où on parle allemand.", explain:"Allemagne = Germany.", label:"Germany (Allemagne)"},
+    {big:"🇮🇹", opts:["Italy","Spain","France"], answer:"Italy", hint:"Presque comme en français, avec un y à la fin.", explain:"Italie = Italy.", label:"Italy (Italie)"},
+    {big:"🇫🇷", opts:["Germany","France","Italy"], answer:"France", hint:"C'est le même mot qu'en français.", explain:"France = France.", label:"France"},
+    {big:"🇪🇸", opts:["Spain","Switzerland","Portugal"], answer:"Spain", hint:"Le pays de la paella.", explain:"Espagne = Spain.", label:"Spain (Espagne)"},
+    {big:"🇬🇧", opts:["Portugal","Britain","Germany"], answer:"Britain", hint:"Le pays où on parle anglais.", explain:"Grande-Bretagne = Britain (ou Great Britain).", label:"Britain (Grande-Bretagne)"},
+    {prompt:"Europe, c'est…", opts:["a country (un pays)","a continent","a village"], answer:"a continent", hint:"Il y a beaucoup de pays dedans.", explain:"Europe est un continent : Switzerland, Spain, Italy… sont dedans.", label:"Europe = continent"}
+  ]},
+  {title:"Words", emoji:"✨", intro:"Comment dit-on ce mot en anglais ?", questions:[
+    {prompt:"et", opts:["and","no","yes"], answer:"and", hint:"3 lettres, commence par a.", explain:"et = and", label:"and (et)"},
+    {prompt:"oui", opts:["no","yes","fine"], answer:"yes", hint:"Le contraire de no.", explain:"oui = yes", label:"yes (oui)"},
+    {prompt:"non", opts:["no","and","yes"], answer:"no", hint:"Presque comme en français.", explain:"non = no", label:"no (non)"},
+    {prompt:"bien (je vais bien)", opts:["great","fine","pet"], answer:"fine", hint:"I'm … , thanks.", explain:"bien = fine → I'm fine, thanks.", label:"fine (bien)"},
+    {prompt:"super", opts:["great","cool","and"], answer:"great", hint:"Tu l'as épelé dans « Spell it! ».", explain:"super = great", label:"great (super)"},
+    {prompt:"génial", opts:["fine","no","cool"], answer:"cool", hint:"Ce mot existe aussi en français !", explain:"génial = cool", label:"cool (génial)"},
+    {prompt:"animal de compagnie", opts:["pet","dog","fish"], answer:"pet", hint:"Le titre de la 1re partie : …s.", explain:"animal de compagnie = pet (Pets = les animaux de compagnie).", label:"pet (animal de compagnie)"}
+  ]}
+];
+
+const TOTAL = SECTIONS.reduce((n,s)=>n+s.questions.length,0);
+let S, Q, tries, stars, missed, order, built;
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function pickVoice(){try{const v=speechSynthesis.getVoices().filter(x=>/^en/i.test(x.lang.replace("_","-")));return v.find(x=>x.name.indexOf("Daniel")===0)||v.find(x=>/premium|enhanced|natural/i.test(x.name))||v.find(x=>/^en-GB/i.test(x.lang.replace("_","-")))||v[0]||null}catch(e){return null}}
+function voice(){return window.speechSynthesis?pickVoice():null}
+function say(t,rate){ if(!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang="en-GB"; u.rate=rate||0.66; const v=voice(); if(v)u.voice=v; speechSynthesis.speak(u); }
+if("speechSynthesis" in window){speechSynthesis.onvoiceschanged=()=>{}}
+
+function start(){S=0;stars=0;missed=[];startSection()}
+function startSection(){Q=0;order=shuffle(SECTIONS[S].questions);renderQ()}
+function el(h){const d=document.createElement("div");d.innerHTML=h;return d.firstElementChild}
+
+function renderSteps(){
+  const st=document.getElementById("steps");st.innerHTML="";
+  SECTIONS.forEach((s,i)=>{const d=document.createElement("div");d.className="step"+(i<S?" done":i===S?" on":"");d.textContent=s.emoji+" "+s.title;st.appendChild(d)});
+  document.getElementById("stars").textContent="⭐ "+stars+" / "+TOTAL;
+}
+
+function renderQ(){
+  tries=0;renderSteps();
+  const sec=SECTIONS[S], q=order[Q], card=document.getElementById("card");
+  let h=`<div class="kicker">Partie ${S+1} / ${SECTIONS.length} · Question ${Q+1} / ${order.length}</div><h2>${sec.emoji} ${sec.title}</h2><p class="intro">${sec.intro}</p>`;
+  if(q.type==="spell"){
+    h+=`<div class="prompt">${q.clue}</div>
+      <button class="tool" id="listen">🔊 Écouter le mot</button><button class="tool" id="letters">🔤 Écouter les lettres</button>
+      <div class="slots" id="slots"></div><div class="tiles" id="tiles"></div>
+      <div style="margin-top:12px"><button class="tool" id="clear">↩︎ Effacer</button><button class="main-btn" id="check">Vérifier</button></div>`;
+  } else {
+    if(q.big) h+=`<div class="big">${q.big}</div>`;
+    if(q.prompt) h+=`<div class="prompt">${q.prompt}</div>`;
+    if(q.say){h+=`<button class="tool" id="listen">🔊 Écouter</button>`; if(!q.prompt) h+=`<button class="tool" id="peek">👀 Voir le mot</button> <span class="hidden-word" id="word"></span>`;}
+    h+=`<div class="opts${q.opts[0].length<=2?" emoji":""}" id="opts"></div>`;
+  }
+  h+=`<div class="fb" id="fb"></div><div class="next" id="next"></div>`;
+  card.innerHTML=h;
+  const L=document.getElementById("listen");
+  if(L){L.onclick=()=>say(q.say||q.word); setTimeout(()=>say(q.say||q.word),300)}
+  const P=document.getElementById("peek"); if(P) P.onclick=()=>{document.getElementById("word").textContent=q.say};
+  if(q.type==="spell") buildSpell(q); else buildChoice(q);
+}
+
+function buildChoice(q){
+  const box=document.getElementById("opts");
+  shuffle(q.opts).forEach(o=>{const b=document.createElement("button");b.textContent=o;b.onclick=()=>pick(b,o,q);box.appendChild(b)});
+}
+function pick(b,o,q){
+  const fb=document.getElementById("fb"), btns=[...document.querySelectorAll("#opts button")];
+  if(o===q.answer){
+    b.classList.add("ok"); btns.forEach(x=>x.disabled=true);
+    if(tries===0){stars++; fb.className="fb good"; fb.innerHTML="⭐ Bravo ! "+q.explain}
+    else {fb.className="fb good"; fb.innerHTML="✅ Oui, bien trouvé ! "+q.explain}
+    done();
+  } else {
+    tries++; b.classList.add("ko"); b.disabled=true;
+    if(tries===1){fb.className="fb hint"; fb.innerHTML="🤔 Pas encore. Indice : "+q.hint}
+    else {btns.forEach(x=>{x.disabled=true; if(x.textContent===q.answer)x.classList.add("ok")}); fb.className="fb bad"; fb.innerHTML="La bonne réponse est <b>"+q.answer+"</b>. "+q.explain; missed.push(q.label); done()}
+  }
+}
+
+function buildSpell(q){
+  const extra=shuffle("abcdefghijklmnoprstuwy".split("").filter(c=>!q.word.includes(c))).slice(0,2);
+  built=[];
+  const tiles=document.getElementById("tiles");
+  shuffle(q.word.split("").concat(extra)).forEach((c,i)=>{const t=document.createElement("button");t.className="tile";t.textContent=c;t.onclick=()=>{if(built.length>=q.word.length)return;built.push(t);t.disabled=true;t.style.visibility="hidden";drawSlots(q)};tiles.appendChild(t)});
+  document.getElementById("letters").onclick=()=>say(q.word.split("").join(", ").toUpperCase(),0.6);
+  document.getElementById("clear").onclick=()=>{built.forEach(t=>{t.disabled=false;t.style.visibility="visible"});built=[];drawSlots(q)};
+  document.getElementById("check").onclick=()=>checkSpell(q);
+  drawSlots(q);
+}
+function drawSlots(q){
+  const s=document.getElementById("slots");s.innerHTML="";
+  for(let i=0;i<q.word.length;i++){const d=document.createElement("div");d.className="slot"+(built[i]?" full":"");d.textContent=built[i]?built[i].textContent:"";
+    if(built[i]) d.onclick=()=>{const t=built.splice(i,1)[0];t.disabled=false;t.style.visibility="visible";drawSlots(q)};
+    s.appendChild(d)}
+}
+function checkSpell(q){
+  const fb=document.getElementById("fb"), w=built.map(t=>t.textContent).join("");
+  if(w.length<q.word.length){fb.className="fb hint";fb.innerHTML="Il manque des lettres : le mot a "+q.word.length+" lettres.";return}
+  if(w===q.word){
+    if(tries===0){stars++;fb.className="fb good";fb.innerHTML="⭐ Bravo ! <b>"+q.word+"</b> : "+q.word.toUpperCase().split("").join(" - ")}
+    else {fb.className="fb good";fb.innerHTML="✅ Oui ! <b>"+q.word+"</b> : "+q.word.toUpperCase().split("").join(" - ")}
+    endSpell();
+  } else {
+    tries++;
+    if(tries===1){fb.className="fb hint";fb.innerHTML="🤔 Pas encore. Indice : le mot commence par « <b>"+q.word[0]+"</b> » et finit par « <b>"+q.word[q.word.length-1]+"</b> ». Écoute les lettres 🔤 et réessaie."; document.getElementById("clear").click()}
+    else {fb.className="fb bad";fb.innerHTML="Le mot s'écrit <b>"+q.word+"</b> : "+q.word.toUpperCase().split("").join(" - ")+". Tu avais écrit « "+w+" ».";missed.push(q.label+" (orthographe)");endSpell()}
+  }
+}
+function endSpell(){document.querySelectorAll("#tiles button,#clear,#check").forEach(b=>b.disabled=true);say(order[Q].word);done()}
+
+function done(){
+  document.getElementById("stars").textContent="⭐ "+stars+" / "+TOTAL;
+  const n=document.getElementById("next"), last=Q===order.length-1, lastSec=S===SECTIONS.length-1;
+  const b=document.createElement("button");b.className="main-btn";
+  b.textContent=!last?"Question suivante →":!lastSec?"Partie suivante →":"Voir mon score 🏆";
+  b.onclick=()=>{if(!last){Q++;renderQ()}else if(!lastSec){S++;startSection()}else finish()};
+  n.appendChild(b);b.focus();
+}
+
+function finish(){
+  S=SECTIONS.length;renderSteps();
+  const r=stars/TOTAL;
+  const msg=r>=0.9?"Excellent, Louis ! Tu connais très bien l'Unit 1 ! 🏆":r>=0.7?"Très bien, Louis ! Encore quelques mots à revoir. 💪":"Bon travail, Louis ! Refais l'exercice demain, tu vas progresser. 🌱";
+  let h=`<div class="end"><h2>🎉 Finished!</h2><div class="score">⭐ ${stars} / ${TOTAL}</div><p>${msg}</p>`;
+  if(missed.length) h+=`<div class="review"><b>Mots à revoir :</b><ul>${missed.map(m=>"<li>"+m+"</li>").join("")}</ul></div>`;
+  else h+=`<p>Aucune erreur : parfait ! 🌟</p>`;
+  h+=`<p class="small">Montre ton score à papa ou maman, ils le noteront dans ton suivi.</p><button class="main-btn" id="again">🔁 Recommencer</button></div>`;
+  document.getElementById("card").innerHTML=h;
+  document.getElementById("again").onclick=start;
+}
+start();
+</script>
+</body>
+</html>
