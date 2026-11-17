@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minuteur de lecture</title>
+<style>
+:root{--bg:#f6f4ee;--paper:#fff;--ink:#22242c;--muted:#6a6c76;--line:#e2ded2;--gold:#f2b705;--go:#2f9e62;--ring:#e9e4d4;--font:ui-rounded,"SF Pro Rounded","Trebuchet MS",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#1a1b20;--paper:#25272e;--ink:#f0eee6;--muted:#a3a5ae;--line:#3a3c45;--ring:#33353d;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:19px;padding:16px;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{width:100%;max-width:420px;background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:22px 18px;text-align:center}
+h1{font-size:1.35rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:1rem}
+.clock{position:relative;width:220px;height:220px;margin:0 auto 16px}
+.clock svg{width:100%;height:100%;transform:rotate(-90deg)}
+.clock circle{fill:none;stroke-width:16}
+.bg{stroke:var(--ring)}
+.fg{stroke:var(--gold);stroke-linecap:round;transition:stroke-dashoffset .9s linear}
+.time{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.time b{font-size:3.4rem;font-variant-numeric:tabular-nums;letter-spacing:1px}
+.time small{color:var(--muted);font-size:.95rem}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+button{font:inherit;font-size:1.05rem;border:0;border-radius:14px;padding:12px 20px;cursor:pointer;background:var(--ring);color:var(--ink)}
+button.main{background:var(--gold);color:#22242c;font-weight:700;min-width:170px}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.done{display:none;margin-top:14px;padding:14px;border-radius:16px;background:rgba(47,158,98,.12);border:2px solid var(--go)}
+.done.show{display:block}
+.done p{margin:6px 0 0;color:var(--muted);font-size:1rem}
+.stars{font-size:1.6rem;letter-spacing:4px}
+.card.finished .fg{stroke:var(--go)}
+</style>
+</head>
+<body>
+<main class="card" id="card">
+  <h1>📖 Mon temps de lecture</h1>
+  <p class="sub" id="sub">Je prends mon livre, je m'installe bien, puis j'appuie sur « Je commence ».</p>
+  <div class="clock" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><circle class="bg" cx="100" cy="100" r="88"/><circle class="fg" id="ring" cx="100" cy="100" r="88"/></svg>
+    <div class="time"><b id="t">10:00</b><small id="lab">minutes</small></div>
+  </div>
+  <p class="sr" id="live" aria-live="polite" style="position:absolute;left:-9999px"></p>
+  <div class="btns">
+    <button class="main" id="go">▶️ Je commence</button>
+    <button id="reset" title="Recommencer depuis le début">↺ Recommencer</button>
+  </div>
+  <div class="done" id="done">
+    <div class="stars">⭐⭐⭐</div>
+    <b>Bravo Louis, tu as lu <span id="nb">10 minutes</span> !</b>
+    <p>Dans Notion, je mets le statut sur <b>Fait ✅</b> et je note mes étoiles.</p>
+  </div>
+</main>
+<script>
+(function(){
+  var q=new URLSearchParams(location.search);
+  var min=parseInt(q.get('min'),10); if(!(min>0&&min<=120)) min=10;
+  var total=min*60, left=total, timer=null, endAt=0, audio=null;
+  var $=function(i){return document.getElementById(i)};
+  var ring=$('ring'), C=2*Math.PI*88;
+  ring.style.strokeDasharray=C;
+  $('nb').textContent=min+(min>1?' minutes':' minute');
+  function fmt(s){var m=Math.floor(s/60), r=s%60; return m+':'+(r<10?'0':'')+r;}
+  function draw(){
+    $('t').textContent=fmt(left);
+    ring.style.strokeDashoffset=C*(1-left/total);
+  }
+  function beep(){
+    try{
+      audio=audio||new (window.AudioContext||window.webkitAudioContext)();
+      [0,0.35,0.7].forEach(function(d,i){
+        var o=audio.createOscillator(), g=audio.createGain();
+        o.frequency.value=[660,784,988][i]; o.type='sine';
+        g.gain.setValueAtTime(0.0001,audio.currentTime+d);
+        g.gain.exponentialRampToValueAtTime(0.3,audio.currentTime+d+0.03);
+        g.gain.exponentialRampToValueAtTime(0.0001,audio.currentTime+d+0.3);
+        o.connect(g); g.connect(audio.destination);
+        o.start(audio.currentTime+d); o.stop(audio.currentTime+d+0.32);
+      });
+    }catch(e){}
+  }
+  function tick(){
+    left=Math.max(0,Math.round((endAt-Date.now())/1000));
+    draw();
+    if(left===0){
+      clearInterval(timer); timer=null;
+      $('card').classList.add('finished');
+      $('done').classList.add('show');
+      $('go').style.display='none';
+      $('sub').textContent='C’est fini ! Je peux fermer mon livre.';
+      $('lab').textContent='terminé';
+      $('live').textContent='Le temps de lecture est terminé. Bravo !';
+      beep();
+    }
+  }
+  function start(){
+    if(audio===null){try{audio=new (window.AudioContext||window.webkitAudioContext)();}catch(e){audio=false}}
+    if(audio&&audio.state==='suspended'){audio.resume();}
+    endAt=Date.now()+left*1000;
+    timer=setInterval(tick,250);
+    $('go').textContent='⏸️ Pause';
+    $('sub').textContent='Je lis tranquillement. Le minuteur compte pour moi.';
+    $('lab').textContent='il reste';
+  }
+  function pause(){
+    clearInterval(timer); timer=null;
+    $('go').textContent='▶️ Je continue';
+    $('sub').textContent='Pause. J’appuie sur « Je continue » quand je reprends.';
+    $('lab').textContent='en pause';
+  }
+  $('go').onclick=function(){ if(left===0) return; timer?pause():start(); };
+  $('reset').onclick=function(){
+    clearInterval(timer); timer=null; left=total; draw();
+    $('card').classList.remove('finished'); $('done').classList.remove('show');
+    $('go').style.display=''; $('go').textContent='▶️ Je commence';
+    $('sub').textContent='Je prends mon livre, je m’installe bien, puis j’appuie sur « Je commence ».';
+    $('lab').textContent='minutes';
+  };
+  draw();
+})();
+</script>
+</body>
+</html>
