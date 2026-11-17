@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission évaluation fractions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Même cahier à carreaux que « Le labo des centièmes » (Nicolas), 6 missions colorées */
+:root{
+  --bg:#f3f5f9; --card:#fff; --fg:#1d2433; --muted:#5b6478; --line:#d6dbe6; --grid:#c4cad8;
+  --blue:#2f6fd0; --pink:#d43d77; --green:#2f8f57; --orange:#e07b1f; --violet:#7a4cc2; --teal:#138a8a;
+  --ok:#2f8f57; --ok-bg:#e1f3e7; --bad:#b8323f; --bad-bg:#fbe4e6; --gold:#f2b705;
+  --display:"Baloo 2","Comic Sans MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151922; --card:#1f2430; --fg:#eceff6; --muted:#a4acbf; --line:#343b4b; --grid:#4a5266;
+  --ok:#7fd49c; --ok-bg:#1d3a28; --bad:#ff8a95; --bad-bg:#43242a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151922; --card:#1f2430; --fg:#eceff6; --muted:#a4acbf; --line:#343b4b; --grid:#4a5266;
+  --ok:#7fd49c; --ok-bg:#1d3a28; --bad:#ff8a95; --bad-bg:#43242a; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:19px;line-height:1.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:28px 28px}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 64px;display:flex;flex-direction:column;gap:24px}
+header h1{font-family:var(--display);font-size:clamp(2rem,6vw,2.8rem);line-height:1.05;margin:0;color:var(--blue)}
+header p{margin:.4rem 0 0;color:var(--muted)}
+.score{position:sticky;top:0;z-index:5;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 14px;
+  font-family:var(--display);font-size:1.15rem;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.stars{font-size:.95rem;color:var(--muted)}
+section,.memo{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+section h2{font-family:var(--display);font-size:1.5rem;margin:0;line-height:1.15}
+section h2 small{display:block;font-family:var(--body);font-size:.85rem;color:var(--muted);font-weight:400}
+.consigne{margin:0;color:var(--muted)}
+.memo{border:2px dashed var(--blue)}
+.memo h2{font-family:var(--display);margin:0;font-size:1.3rem}
+.memo ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.memo-row{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+.memo-row figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.95rem;text-align:center}
+.q{border-top:2px dashed var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.q:first-of-type{border-top:0;padding-top:0}
+.q-head{font-family:var(--display);font-size:1.1rem}
+.vis{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;max-width:100%;overflow-x:auto}
+.vis svg{max-width:100%;height:auto}
+.eq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-size:1.4rem}
+.frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1}
+.frac .den{border-top:3px solid var(--fg);padding:0 6px;min-width:44px;text-align:center}
+.box{width:64px;height:44px;font:inherit;font-size:1.3rem;text-align:center;border:2px solid var(--grid);border-radius:10px;background:var(--bg);color:var(--fg)}
+.box:focus{outline:3px solid var(--gold);outline-offset:1px;border-color:var(--blue)}
+.box.ok{border-color:var(--ok);background:var(--ok-bg)}
+.box.bad{border-color:var(--bad);background:var(--bad-bg)}
+button{font:inherit;font-family:var(--display);font-size:1.05rem;border:0;border-radius:12px;padding:8px 18px;cursor:pointer;background:var(--blue);color:#fff}
+button.ghost{background:transparent;color:var(--muted);border:2px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.choices{display:flex;flex-wrap:wrap;gap:10px}
+.choices button{background:var(--bg);color:var(--fg);border:2px solid var(--grid)}
+.choices button.ok{background:var(--ok-bg);border-color:var(--ok);opacity:1}
+.choices button.bad{background:var(--bad-bg);border-color:var(--bad);opacity:1}
+.fb{margin:0;padding:10px 14px;border-radius:12px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-bg)}
+.fb.bad{background:var(--bad-bg)}
+.fb.hint{background:var(--bg);border:2px dashed var(--gold)}
+.helpvis{display:flex;flex-wrap:wrap;gap:8px}
+.mission-end{font-family:var(--display);font-size:1.2rem;text-align:center;display:none}
+.mission-end.show{display:block}
+svg.g rect.c{stroke:var(--grid);stroke-width:1}
+svg.g rect.frame{fill:none;stroke:var(--fg);stroke-width:2}
+svg.play rect.c{cursor:pointer}
+.gwrap{display:flex;flex-direction:column;gap:4px}
+.colbtns{display:grid;grid-template-columns:repeat(10,1fr);width:202px}
+.colbtns button{padding:2px 0;font-size:.7rem;border-radius:6px;margin:2px 1px;background:var(--bg);color:var(--muted);border:1px solid var(--grid)}
+.count{font-size:.95rem;color:var(--muted)}
+.fig{stroke:var(--fg);stroke-width:2;fill:var(--card)}
+.final{text-align:center;border:3px solid var(--gold)}
+.final h2{font-size:2rem}
+.big{font-size:2.4rem;letter-spacing:4px}
+@media (max-width:520px){.eq{font-size:1.2rem}.box{width:52px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🎯 Mission évaluation : les fractions</h1>
+  <p>Révision avant l'évaluation, d'après tes fiches N-F 18 à N-F 31. 6 missions, jusqu'à 3 étoiles par mission. Environ 25 minutes.</p>
+</header>
+
+<div class="score"><span>Mes étoiles : <b id="total">0</b> / 18</span><span class="stars" id="starline"></span></div>
+
+<div class="memo">
+  <h2>📌 À retenir</h2>
+  <div class="memo-row" id="memo"></div>
+  <ul>
+    <li>Une fraction, c'est des <b>parts égales</b>. Le nombre du bas dit en combien de parts égales on coupe l'unité.</li>
+    <li><b>/10</b> → je colorie des <b>colonnes</b>. <b>/100</b> → je colorie des <b>petits carrés</b>. 7/10 = 7 colonnes = 70/100.</li>
+    <li>Quand il n'y a pas de dixièmes, j'écris un <b>0</b> : 3 + 9/100 = 3 + 0/10 + 9/100 = <b>309</b>/100.</li>
+    <li>Si on demande « une seule fraction », j'écris une <b>fraction</b>, pas un nombre à virgule.</li>
+  </ul>
+</div>
+
+<section id="m1"><h2>Mission 1 · Parts de figures <small>La partie colorée représente-t-elle la fraction ? Regarde si les parts sont égales.</small></h2></section>
+<section id="m2"><h2>Mission 2 · Fractions de bandes <small>Chaque bande entière = 1 unité. Écris la fraction coloriée.</small></h2></section>
+<section id="m3"><h2>Mission 3 · La droite graduée <small>À quel nombre correspond le point ? Écris-le de deux manières.</small></h2></section>
+<section id="m4"><h2>Mission 4 · Colonnes ou petits carrés ? <small>Clique sur les petits carrés, ou sur un bouton sous une colonne pour la colorier en entier.</small></h2></section>
+<section id="m5"><h2>Mission 5 · Une seule fraction <small>Écris en fraction (pas avec une virgule). Attention au 0 !</small></h2></section>
+<section id="m6"><h2>Mission 6 · Les pièges <small>Vrai ou faux ? Réfléchis bien avant de cliquer.</small></h2></section>
+
+<section class="final" id="final" hidden>
+  <h2>🏆 Mission terminée !</h2>
+  <p class="big" id="finalstars"></p>
+  <p id="finalmsg"></p>
+  <p class="consigne">Note ton total d'étoiles dans Notion, dans la colonne « Étoiles gagnées ».</p>
+  <div><button class="ghost" id="restart">Tout recommencer</button></div>
+</section>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+const COL={m1:"var(--blue)",m2:"var(--green)",m3:"var(--violet)",m4:"var(--pink)",m5:"var(--orange)",m6:"var(--teal)"};
+
+/* ---------- Dessins ---------- */
+function el(tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+function svgBox(w,h){const s=el("svg",{viewBox:`0 0 ${w} ${h}`,width:w,height:h});return s;}
+
+/* Grille 10 × 10 : on colorie colonne par colonne (gauche → droite), chaque colonne de bas en haut. */
+function grid(n,color,size=180){
+  const s=size/10, svg=svgBox(size+2,size+2); svg.setAttribute("class","g");
+  svg.setAttribute("role","img");svg.setAttribute("aria-label",`grille de 100 carrés, ${n} coloriés`);
+  for(let col=0;col<10;col++)for(let row=9;row>=0;row--){
+    const k=col*10+(9-row);
+    svg.appendChild(el("rect",{x:1+col*s,y:1+row*s,width:s,height:s,class:"c",style:"fill:"+(k<n?color:"var(--card)")}));
+  }
+  svg.appendChild(el("rect",{x:1,y:1,width:size,height:size,class:"frame"}));
+  return svg;
+}
+function grids(n,color,size){const w=document.createElement("div");w.className="helpvis";let rest=n;do{const k=Math.min(rest,100);w.appendChild(grid(k,color,size||(n>100?140:160)));rest-=k;}while(rest>0);return w;}
+
+/* Bandes : `units` bandes de 1 unité, coupées en `parts` parts égales, `colored` parts coloriées en tout. */
+function bands(units,parts,colored,color){
+  const W=420,H=34,gap=10,svg=svgBox(W+4,units*(H+gap));
+  svg.setAttribute("role","img");svg.setAttribute("aria-label",`${units} bande(s) de ${parts} parts, ${colored} parts coloriées`);
+  let c=0;
+  for(let u=0;u<units;u++){const y=2+u*(H+gap),pw=W/parts;
+    for(let p=0;p<parts;p++){svg.appendChild(el("rect",{x:2+p*pw,y,width:pw,height:H,style:`fill:${c<colored?color:"var(--card)"};stroke:var(--fg);stroke-width:2`}));c++;}}
+  return svg;
+}
+
+/* Droite graduée de 0 à 3 : `div` graduations par unité, point placé à num/div. */
+function line(div,num,letter,color){
+  const W=640,H=86,x0=24,U=190,svg=svgBox(W,H),X=v=>x0+v*U;
+  svg.setAttribute("role","img");svg.setAttribute("aria-label",`droite graduée, point ${letter}`);
+  svg.appendChild(el("line",{x1:x0,y1:50,x2:W-12,y2:50,style:"stroke:var(--fg);stroke-width:2"}));
+  svg.appendChild(el("path",{d:`M${W-12},44 L${W-2},50 L${W-12},56 Z`,style:"fill:var(--fg)"}));
+  for(let i=0;i<=3*div;i++){const big=i%div===0,x=X(i/div);
+    svg.appendChild(el("line",{x1:x,y1:big?38:43,x2:x,y2:big?62:57,style:`stroke:var(--fg);stroke-width:${big?2.5:1.5}`}));
+    if(big){const t=el("text",{x,y:80,"text-anchor":"middle",style:"fill:var(--fg);font:700 16px var(--body)"});t.textContent=i/div;svg.appendChild(t);}}
+  const xp=X(num/div);
+  svg.appendChild(el("circle",{cx:xp,cy:50,r:7,style:`fill:${color};stroke:var(--card);stroke-width:2`}));
+  const t=el("text",{x:xp,y:28,"text-anchor":"middle",style:`fill:${color};font:800 20px var(--display)`});t.textContent=letter;svg.appendChild(t);
+  return svg;
+}
+
+/* Figures de la mission 1 (comme la fiche N-F 19) */
+const FIG={
+  bar3:c=>`<svg viewBox="0 0 184 64" width="184" height="64">${[0,1,2].map(i=>`<rect class="fig" x="${2+i*60}" y="12" width="60" height="40" style="fill:${i===0?c:"var(--card)"}"/>`).join("")}</svg>`,
+  sq4:c=>`<svg viewBox="0 0 114 114" width="114" height="114">${[[0,0],[1,0],[0,1],[1,1]].map(([i,j],k)=>`<rect class="fig" x="${2+i*55}" y="${2+j*55}" width="55" height="55" style="fill:${k===0?c:"var(--card)"}"/>`).join("")}</svg>`,
+  unequal3:c=>`<svg viewBox="0 0 184 74" width="184" height="74"><rect class="fig" x="2" y="2" width="90" height="70"/><rect class="fig" x="92" y="2" width="45" height="70" style="fill:${c}"/><rect class="fig" x="137" y="2" width="45" height="70"/></svg>`,
+  circle4:c=>`<svg viewBox="0 0 114 114" width="114" height="114"><circle class="fig" cx="57" cy="57" r="54"/><path class="fig" d="M57,57 L57,3 A54,54 0 0 1 111,57 Z" style="fill:${c}"/><path class="fig" d="M57,57 L111,57 A54,54 0 0 1 57,111 Z" style="fill:${c}"/><line x1="3" y1="57" x2="57" y2="57" style="stroke:var(--fg);stroke-width:2"/><line x1="57" y1="57" x2="57" y2="111" style="stroke:var(--fg);stroke-width:2"/></svg>`,
+  bar5:c=>`<svg viewBox="0 0 244 44" width="244" height="44">${[0,1,2,3,4].map(i=>`<rect class="fig" x="${2+i*48}" y="2" width="48" height="40" style="fill:${i<2?c:"var(--card)"}"/>`).join("")}</svg>`,
+  bar6:c=>`<svg viewBox="0 0 244 44" width="244" height="44">${[0,1,2,3,4,5].map(i=>`<rect class="fig" x="${2+i*40}" y="2" width="40" height="40" style="fill:${i<2?c:"var(--card)"}"/>`).join("")}</svg>`
+};
+
+function F(n,d){return `<span class="frac"><span>${n}</span><span class="den">${d}</span></span>`;}
+function B(k){return `<input class="box" data-k="${k}" inputmode="numeric" autocomplete="off" aria-label="réponse">`;}
+
+/* Mémo */
+(function(){const m=document.getElementById("memo");
+  [[100,"1 unité","= 100/100"],[10,"1 dixième = 1/10","= 1 colonne"],[1,"1 centième = 1/100","= 1 petit carré"]].forEach(([n,a,b])=>{
+    const f=document.createElement("figure");f.appendChild(grid(n,"var(--blue)",100));f.insertAdjacentHTML("beforeend",`<span><b>${a}</b><br>${b}</span>`);m.appendChild(f);});
+})();
+
+/* ---------- Étoiles ---------- */
+const KEY="louis-math-eval-fractions";
+let best={};try{best=JSON.parse(localStorage.getItem(KEY)||"{}")||{};}catch(e){best={};}
+const missions={};
+function starsFor(err){return err===0?3:err<=2?2:1;}
+function refreshScore(){let t=0;const ids=Object.keys(missions);ids.forEach(id=>{t+=best[id]||0;});
+  document.getElementById("total").textContent=t;document.getElementById("starline").textContent=ids.filter(id=>best[id]).length+" / 6 missions";return t;}
+function questionDone(mid,errors){const m=missions[mid];m.done++;m.errors+=errors;
+  if(m.done===m.total){const s=starsFor(m.errors);best[mid]=Math.max(best[mid]||0,s);
+    try{localStorage.setItem(KEY,JSON.stringify(best));}catch(e){}
+    const end=document.querySelector(`#${mid} .mission-end`);
+    end.innerHTML=`${"⭐".repeat(s)}${"☆".repeat(3-s)} ${s===3?"Parfait, sans erreur !":s===2?"Bien joué !":"Mission réussie ! Tu peux la refaire pour gagner plus d'étoiles."}`;
+    end.classList.add("show");refreshScore();checkFinal();}}
+function checkFinal(){if(Object.values(missions).every(m=>m.done===m.total)){const t=refreshScore(),f=document.getElementById("final");f.hidden=false;
+  document.getElementById("finalstars").textContent=`${t} / 18 ⭐`;
+  document.getElementById("finalmsg").textContent=t>=16?"Tu es prêt pour l'évaluation !":t>=11?"Très bon travail ! Refais les missions où tu as moins de 3 étoiles.":"Bravo d'être allé jusqu'au bout ! Relis « À retenir » et refais les missions 4 et 5.";}}
+function head(host,i,txt){const d=document.createElement("div");d.className="q";d.innerHTML=`<div class="q-head">${i}. ${txt||""}</div>`;host.appendChild(d);return d;}
+function fbEl(d){const fb=document.createElement("p");fb.className="fb";d.appendChild(fb);return fb;}
+
+/* Question à remplir : q = {txt, vis(), html (avec cases B(k)), a:{k:valeur}, hint, help() (dessin d'aide montré après 1 erreur), why} */
+function fillQ(mid,host,i,q){
+  const d=head(host,i,q.txt);
+  if(q.vis){const v=document.createElement("div");v.className="vis";const x=q.vis();typeof x==="string"?v.innerHTML=x:v.appendChild(x);d.appendChild(v);}
+  const eq=document.createElement("div");eq.className="eq";eq.innerHTML=q.html;d.appendChild(eq);
+  const row=document.createElement("div");row.innerHTML=`<button>Vérifier</button>`;d.appendChild(row);
+  const fb=fbEl(d);const btn=row.querySelector("button");const boxes=[...d.querySelectorAll(".box")];
+  let err=0,finished=false;
+  boxes.forEach(b=>b.addEventListener("keydown",e=>{if(e.key==="Enter")btn.click();}));
+  btn.onclick=()=>{if(finished)return;let allOk=true,empty=false;
+    boxes.forEach(b=>{const v=b.value.trim().replace(/\s/g,"");if(v==="")empty=true;
+      const ok=v!==""&&/^\d+$/.test(v)&&Number(v)===q.a[b.dataset.k];b.classList.toggle("ok",ok);b.classList.toggle("bad",!ok&&v!=="");if(!ok)allOk=false;});
+    if(empty&&!allOk){fb.className="fb show hint";fb.textContent="Remplis toutes les cases, puis clique sur Vérifier.";return;}
+    if(allOk){finished=true;btn.disabled=true;boxes.forEach(b=>b.disabled=true);fb.className="fb show ok";fb.innerHTML=`✅ Bravo ! ${q.why}`;questionDone(mid,err);return;}
+    err++;
+    if(err===1){fb.className="fb show hint";fb.innerHTML=`💡 Indice : ${q.hint}`;
+      if(q.help){const h=q.help();h.classList.add("helpvis");fb.appendChild(h);}}
+    else{finished=true;btn.disabled=true;boxes.forEach(b=>{b.value=q.a[b.dataset.k];b.classList.remove("bad");b.classList.add("ok");b.disabled=true;});
+      fb.className="fb show bad";fb.innerHTML=`Voici la bonne réponse. ${q.why}`;questionDone(mid,err);}};
+}
+
+/* Question à choix : q = {txt, vis(), opts:[...], ok: index, hint, why} */
+function choiceQ(mid,host,i,q){
+  const d=head(host,i,q.txt);
+  if(q.vis){const v=document.createElement("div");v.className="vis";const x=q.vis();typeof x==="string"?v.innerHTML=x:v.appendChild(x);d.appendChild(v);}
+  const c=document.createElement("div");c.className="choices";d.appendChild(c);const fb=fbEl(d);
+  let err=0,finished=false;
+  q.opts.forEach((o,k)=>{const b=document.createElement("button");b.innerHTML=o;c.appendChild(b);
+    b.onclick=()=>{if(finished||b.disabled)return;
+      if(k===q.ok){finished=true;b.classList.add("ok");[...c.children].forEach(x=>x.disabled=true);fb.className="fb show ok";fb.innerHTML=`✅ Bravo ! ${q.why}`;questionDone(mid,err);}
+      else{err++;b.classList.add("bad");b.disabled=true;
+        if(err===1&&q.opts.length>2){fb.className="fb show hint";fb.innerHTML=`💡 Indice : ${q.hint}`;}
+        else{finished=true;[...c.children].forEach(x=>x.disabled=true);c.children[q.ok].classList.add("ok");fb.className="fb show bad";fb.innerHTML=`La bonne réponse est en vert. ${q.why}`;questionDone(mid,err);}}};});
+}
+
+/* Grilles à colorier : q = {txt (avec fraction), target, nGrids, hint, why} */
+function paintQ(mid,host,i,q){
+  const d=head(host,i,q.txt);const color=COL[mid];
+  const v=document.createElement("div");v.className="vis";d.appendChild(v);
+  const state=[];const cells=[];
+  for(let g=0;g<q.nGrids;g++){const st=new Array(100).fill(false);state.push(st);
+    const w=document.createElement("div");w.className="gwrap";
+    const size=200,s=size/10,svg=svgBox(size+2,size+2);svg.setAttribute("class","g play");
+    svg.setAttribute("aria-label",`grille ${g+1} à colorier`);const rs=[];
+    for(let col=0;col<10;col++)for(let row=0;row<10;row++){const k=col*10+row;
+      const r=el("rect",{x:1+col*s,y:1+row*s,width:s,height:s,class:"c",style:"fill:var(--card)"});
+      r.addEventListener("click",()=>{if(d.dataset.done)return;st[k]=!st[k];paint();});svg.appendChild(r);rs[k]=r;}
+    svg.appendChild(el("rect",{x:1,y:1,width:size,height:size,class:"frame"}));cells.push(rs);
+    const cb=document.createElement("div");cb.className="colbtns";
+    for(let col=0;col<10;col++){const b=document.createElement("button");b.textContent="▲";b.title=`colonne ${col+1}`;
+      b.onclick=()=>{if(d.dataset.done)return;const all=[...Array(10).keys()].every(r=>st[col*10+r]);for(let r=0;r<10;r++)st[col*10+r]=!all;paint();};cb.appendChild(b);}
+    w.appendChild(svg);w.appendChild(cb);v.appendChild(w);}
+  const cnt=document.createElement("p");cnt.className="count";d.appendChild(cnt);
+  function total(){return state.reduce((a,st)=>a+st.filter(Boolean).length,0);}
+  function paint(){state.forEach((st,g)=>st.forEach((on,k)=>cells[g][k].style.fill=on?color:"var(--card)"));
+    const t=total();cnt.textContent=`Petits carrés coloriés : ${t}`;}
+  paint();
+  const row=document.createElement("div");row.innerHTML=`<button>Vérifier</button> <button class="ghost">Effacer</button>`;d.appendChild(row);
+  const [btn,clr]=row.querySelectorAll("button");const fb=fbEl(d);let err=0;
+  clr.onclick=()=>{if(d.dataset.done)return;state.forEach(st=>st.fill(false));paint();};
+  btn.onclick=()=>{if(d.dataset.done)return;const t=total();
+    if(t===q.target){d.dataset.done=1;btn.disabled=clr.disabled=true;fb.className="fb show ok";fb.innerHTML=`✅ Bravo ! ${q.why}`;questionDone(mid,err);return;}
+    err++;
+    if(err===1){fb.className="fb show hint";fb.innerHTML=`💡 Tu as colorié ${t} petits carrés. Indice : ${q.hint}`;}
+    else{d.dataset.done=1;btn.disabled=clr.disabled=true;let rest=q.target;
+      state.forEach(st=>{for(let k=0;k<100;k++){st[k]=rest>0;if(rest>0)rest--;}});paint();
+      fb.className="fb show bad";fb.innerHTML=`Voici la bonne réponse. ${q.why}`;questionDone(mid,err);}};
+}
+
+function mission(mid,list){const host=document.getElementById(mid);missions[mid]={total:list.length,done:0,errors:0};
+  list.forEach((q,i)=>q.kind(mid,host,i+1,q));
+  const end=document.createElement("p");end.className="mission-end";host.appendChild(end);}
+
+/* ---------- Mission 1 : parts de figures (N-F 19) ---------- */
+const OUI=["oui","non"];
+mission("m1",[
+  {kind:choiceQ,txt:`La partie colorée représente-t-elle ${F(1,3)} de la figure ?`,vis:()=>FIG.bar3(COL.m1),opts:OUI,ok:0,why:"La bande est coupée en 3 parts égales, 1 est coloriée : c'est 1/3."},
+  {kind:choiceQ,txt:`La partie colorée représente-t-elle ${F(1,3)} de la figure ?`,vis:()=>FIG.sq4(COL.m1),opts:OUI,ok:1,why:"Le carré est coupé en 4 parts égales : la partie coloriée vaut 1/4, pas 1/3."},
+  {kind:choiceQ,txt:`La partie colorée représente-t-elle ${F(1,3)} de la figure ?`,vis:()=>FIG.unequal3(COL.m1),opts:OUI,ok:1,why:"Il y a bien 3 parts, mais elles ne sont pas égales ! La grande part vaut la moitié ; la partie coloriée vaut 1/4."},
+  {kind:choiceQ,txt:`La partie colorée représente-t-elle ${F(1,2)} de la figure ?`,vis:()=>FIG.circle4(COL.m1),opts:OUI,ok:0,why:"Le disque est coupé en 4 parts égales, 2 sont coloriées : 2/4 = 1/2."},
+  {kind:choiceQ,txt:`La partie colorée représente-t-elle ${F(2,5)} de la figure ?`,vis:()=>FIG.bar5(COL.m1),opts:OUI,ok:0,why:"5 parts égales, 2 coloriées : c'est 2/5."},
+  {kind:choiceQ,txt:`La partie colorée représente-t-elle ${F(2,5)} de la figure ?`,vis:()=>FIG.bar6(COL.m1),opts:OUI,ok:1,why:"Compte les parts : il y en a 6, pas 5. La partie coloriée vaut 2/6."}
+]);
+
+/* ---------- Mission 2 : bandes (N-F 18 et Fractions de bandes 2) ---------- */
+mission("m2",[
+  {kind:fillQ,vis:()=>bands(1,4,3,COL.m2),html:`${F(B("n"),B("d"))}`,a:{n:3,d:4},hint:"En bas : en combien de parts égales est coupée la bande ? En haut : combien de parts sont coloriées ?",why:"3 parts coloriées sur 4 : 3/4."},
+  {kind:fillQ,vis:()=>bands(1,5,3,COL.m2),html:`${F(B("n"),B("d"))}`,a:{n:3,d:5},hint:"Compte toutes les parts de la bande (en bas), puis les parts coloriées (en haut).",why:"3 parts coloriées sur 5 : 3/5."},
+  {kind:fillQ,vis:()=>bands(1,10,7,COL.m2),html:`${F(B("n"),B("d"))}`,a:{n:7,d:10},hint:"La bande est coupée en 10 parts égales.",why:"7 parts sur 10 : 7/10."},
+  {kind:fillQ,txt:"Plus grand que 1 ! Chaque bande vaut 1 unité.",vis:()=>bands(2,2,3,COL.m2),html:`${F(B("n"),2)} = ${B("e")} + ${F(B("r"),2)}`,a:{n:3,e:1,r:1},hint:"Chaque bande est coupée en 2 demis. Compte tous les demis coloriés. Une bande pleine = 1 unité.",why:"3 demis coloriés : 3/2 = 1 + 1/2."},
+  {kind:fillQ,txt:"Chaque bande vaut 1 unité.",vis:()=>bands(2,3,5,COL.m2),html:`${F(B("n"),3)} = ${B("e")} + ${F(B("r"),3)}`,a:{n:5,e:1,r:2},hint:"Chaque bande est coupée en 3 tiers. Compte tous les tiers coloriés.",why:"5 tiers : 5/3 = 1 + 2/3 (une bande pleine + 2 tiers)."}
+]);
+
+/* ---------- Mission 3 : droite graduée (N-F 26 Codages) ---------- */
+mission("m3",[
+  {kind:fillQ,txt:"L'unité est coupée en 2.",vis:()=>line(2,3,"A",COL.m3),html:`A = ${F(B("n"),2)} = ${B("e")} + ${F(B("r"),2)}`,a:{n:3,e:1,r:1},hint:"Entre 0 et 1, il y a 2 petits pas : chaque pas vaut 1/2. Compte les pas depuis 0.",why:"A est à 3 pas de 1/2 : 3/2 = 1 + 1/2."},
+  {kind:fillQ,txt:"L'unité est coupée en 3.",vis:()=>line(3,5,"B",COL.m3),html:`B = ${F(B("n"),3)} = ${B("e")} + ${F(B("r"),3)}`,a:{n:5,e:1,r:2},hint:"Entre 0 et 1, il y a 3 petits pas : chaque pas vaut 1/3.",why:"B est à 5 pas de 1/3 : 5/3 = 1 + 2/3."},
+  {kind:fillQ,txt:"L'unité est coupée en 4.",vis:()=>line(4,7,"C",COL.m3),html:`C = ${F(B("n"),4)} = ${B("e")} + ${F(B("r"),4)}`,a:{n:7,e:1,r:3},hint:"Chaque petit pas vaut 1/4. C est juste avant le 2.",why:"C est à 7 pas de 1/4 : 7/4 = 1 + 3/4."},
+  {kind:fillQ,txt:"L'unité est coupée en 10.",vis:()=>line(10,13,"D",COL.m3),html:`D = ${F(B("n"),10)} = ${B("e")} + ${F(B("r"),10)}`,a:{n:13,e:1,r:3},hint:"Chaque petit pas vaut 1/10. Pars de 1 et compte les pas qui restent.",why:"D est à 13 pas de 1/10 : 13/10 = 1 + 3/10."},
+  {kind:fillQ,txt:"L'unité est coupée en 5.",vis:()=>line(5,12,"E",COL.m3),html:`E = ${F(B("n"),5)} = ${B("e")} + ${F(B("r"),5)}`,a:{n:12,e:2,r:2},hint:"Chaque petit pas vaut 1/5. E est après le 2 : 2 unités, plus combien de cinquièmes ?",why:"E est à 12 pas de 1/5 : 12/5 = 2 + 2/5."}
+]);
+
+/* ---------- Mission 4 : colonnes ou petits carrés (N-F 28) ---------- */
+mission("m4",[
+  {kind:choiceQ,txt:`Pour colorier ${F(7,10)} du carré unité, je colorie…`,opts:["7 petits carrés","7 colonnes","70 colonnes"],ok:1,hint:"Regarde le nombre du bas : 10. L'unité est coupée en 10 colonnes.",why:"/10 → des colonnes. 7/10 = 7 colonnes = 70 petits carrés = 70/100."},
+  {kind:paintQ,txt:`Colorie ${F(7,10)} du carré unité.`,target:70,nGrids:1,hint:"Le nombre du bas est 10 : colorie des colonnes entières (boutons ▲).",why:"7 colonnes = 70 petits carrés. 7/10 = 70/100."},
+  {kind:paintQ,txt:`Colorie ${F(10,10)} du carré unité.`,target:100,nGrids:1,hint:"10 dixièmes, c'est 10 colonnes… donc tout le carré !",why:"10/10 = 1 unité : tout le carré."},
+  {kind:paintQ,txt:`Colorie ${F(5,10)} + ${F(3,100)} du carré unité.`,target:53,nGrids:1,hint:"5/10 = 5 colonnes. 3/100 = 3 petits carrés en plus.",why:"5 colonnes + 3 carrés = 53 petits carrés = 53/100."},
+  {kind:paintQ,txt:`Colorie ${F(13,10)} + ${F(9,100)} (tu as 2 carrés unités).`,target:139,nGrids:2,hint:"13/10 = 13 colonnes : 10 colonnes (1 carré entier) + 3 colonnes dans le 2e carré. Puis 9 petits carrés.",why:"13 colonnes + 9 carrés = 139 petits carrés = 139/100."}
+]);
+
+/* ---------- Mission 5 : une seule fraction (N-F 30 et N-F 31) ---------- */
+mission("m5",[
+  {kind:fillQ,html:`2 + ${F(3,10)} + ${F(7,100)} = ${F(B("n"),100)}`,a:{n:237},hint:"2 unités = 200 centièmes. 3/10 = 30 centièmes. 7/100 = 7 centièmes. Additionne !",help:()=>grids(237,COL.m5),why:"200 + 30 + 7 = 237 : 237/100."},
+  {kind:fillQ,html:`4 + ${F(6,10)} + ${F(1,100)} = ${F(B("n"),100)}`,a:{n:461},hint:"4 unités = 400 centièmes ; 6/10 = 60 centièmes ; 1/100 = 1 centième.",why:"400 + 60 + 1 = 461 : 461/100."},
+  {kind:fillQ,txt:"⚠️ Attention au 0 !",html:`3 + ${F(9,100)} = ${F(B("n"),100)}`,a:{n:309},hint:"Il n'y a pas de dixièmes : 3 + 0/10 + 9/100. Donc 300 + 0 + 9.",help:()=>grids(309,COL.m5),why:"3 + 0/10 + 9/100 = 309/100 (et pas 39/100 !)."},
+  {kind:fillQ,txt:"⚠️ Combien d'unités ?",html:`${F(8,10)} + ${F(5,100)} = ${F(B("n"),100)}`,a:{n:85},hint:"Il n'y a pas d'unité ici. 8/10 = 80 centièmes, plus 5.",help:()=>grids(85,COL.m5),why:"80 + 5 = 85 : 85/100. C'est moins qu'une unité."},
+  {kind:fillQ,txt:"Maintenant dans l'autre sens :",html:`${F(257,100)} = ${B("e")} + ${F(B("d"),10)} + ${F(B("c"),100)}`,a:{e:2,d:5,c:7},hint:"257 = 200 + 50 + 7. 200 centièmes = 2 unités ; 50 centièmes = 5 dixièmes.",help:()=>grids(257,COL.m5),why:"257/100 = 2 + 5/10 + 7/100."},
+  {kind:fillQ,html:`${F(206,100)} = ${B("e")} + ${F(B("d"),10)} + ${F(B("c"),100)}`,a:{e:2,d:0,c:6},hint:"206 = 200 + 6. Combien de colonnes après les 2 carrés pleins ?",help:()=>grids(206,COL.m5),why:"206/100 = 2 + 0/10 + 6/100. Le 0 montre qu'il n'y a pas de dixième."},
+  {kind:fillQ,html:`${F(13,10)} = ${B("e")} + ${F(B("d"),10)} + ${F(B("c"),100)}`,a:{e:1,d:3,c:0},hint:"Ici c'est sur 10 : 13 dixièmes = 10 dixièmes (1 unité) + 3 dixièmes.",why:"13/10 = 1 + 3/10 + 0/100."},
+  {kind:fillQ,html:`${F(48,100)} = ${B("e")} + ${F(B("d"),10)} + ${F(B("c"),100)}`,a:{e:0,d:4,c:8},hint:"48 centièmes, c'est moins qu'une unité. 48 = 40 + 8.",why:"48/100 = 0 + 4/10 + 8/100."}
+]);
+
+/* ---------- Mission 6 : les pièges ---------- */
+const VF=["Vrai","Faux"];
+mission("m6",[
+  {kind:choiceQ,txt:`3 + ${F(9,100)} = ${F(39,100)}`,opts:VF,ok:1,why:"Faux ! 3 unités = 300 centièmes. 3 + 9/100 = 309/100."},
+  {kind:choiceQ,txt:`${F(7,10)} = ${F(70,100)}`,opts:VF,ok:0,why:"Vrai : 7 colonnes = 70 petits carrés."},
+  {kind:choiceQ,txt:`${F(7,10)} = ${F(7,100)}`,opts:VF,ok:1,why:"Faux : 7/10 = 7 colonnes, 7/100 = seulement 7 petits carrés."},
+  {kind:choiceQ,txt:`${F(10,10)} = 1 unité`,opts:VF,ok:0,why:"Vrai : 10 colonnes = tout le carré."},
+  {kind:choiceQ,txt:`${F(13,10)} est plus petit que 1.`,opts:VF,ok:1,why:"Faux : 13 dixièmes, c'est plus que 10 dixièmes. 13/10 = 1 + 3/10."},
+  {kind:choiceQ,txt:`${F(8,10)} + ${F(5,100)} = 8,5`,opts:VF,ok:1,why:"Faux : il n'y a même pas une unité ! 8/10 + 5/100 = 85/100."}
+]);
+
+refreshScore();
+document.getElementById("restart").onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();};
+</script>
+</body>
+</html>
