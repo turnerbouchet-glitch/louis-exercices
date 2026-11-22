@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 1 et nombres – Lundi</title>
+<style>
+  :root{--bg:#f3f7ff;--card:#fff;--ink:#1d2340;--muted:#5b6385;--blue:#3b6cf6;--blue-soft:#e3ebff;--green:#1f9d55;--green-soft:#dcf5e6;--red:#d64545;--red-soft:#fde4e4;--line:#d9e0f2}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;font-size:19px;line-height:1.45}
+  header{background:#e0702b;color:#fff;padding:14px 16px}
+  header .row{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  header h1{margin:0;font-size:23px}
+  .stars{background:rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;font-weight:700}
+  main{max-width:760px;margin:0 auto;padding:16px}
+  .steps{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 14px}
+  .step{flex:1;min-width:110px;text-align:center;font-size:14px;padding:6px 4px;border-radius:10px;background:#e6eaf5;color:var(--muted)}
+  .step.on{background:var(--blue);color:#fff;font-weight:700}
+  .step.done{background:var(--green-soft);color:var(--green);font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 4px 14px rgba(30,50,120,.06)}
+  .kicker{color:var(--muted);font-size:15px;margin-bottom:4px}
+  h2{margin:0 0 6px;font-size:24px}
+  .intro{color:var(--muted);margin:0 0 14px}
+  .prompt{font-size:23px;margin:10px 0 14px}
+  .big{font-size:64px;line-height:1;margin:6px 0}
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+  .opts.emoji button{font-size:46px;padding:14px}
+  .opts.pics button{font-size:34px;padding:12px 6px;letter-spacing:-2px}
+  button{font:inherit;cursor:pointer;border-radius:14px;border:2px solid var(--line);background:#fff;color:var(--ink);padding:12px 14px}
+  button:hover:not(:disabled){border-color:var(--blue);background:var(--blue-soft)}
+  button:disabled{cursor:default}
+  .ok{border-color:var(--green)!important;background:var(--green-soft)!important}
+  .ko{border-color:var(--red)!important;background:var(--red-soft)!important;opacity:.7}
+  .tool{border:none;background:var(--blue-soft);color:var(--blue);font-weight:700;padding:10px 14px;margin:0 8px 10px 0}
+  .main-btn{background:var(--blue);color:#fff;border:none;font-weight:700;padding:12px 22px}
+  .main-btn:hover{background:#2c56d4!important;color:#fff}
+  .fb{margin-top:14px;padding:12px 14px;border-radius:12px;display:none}
+  .fb.good{display:block;background:var(--green-soft)} .fb.hint{display:block;background:#fff6d8} .fb.bad{display:block;background:var(--red-soft)}
+  .next{margin-top:14px;text-align:right}
+  .hidden-word{color:var(--muted);font-style:italic}
+  .end{text-align:center} .end .score{font-size:44px;font-weight:800;color:var(--blue);margin:8px 0}
+  .review{text-align:left;background:#fafbff;border:1px solid var(--line);border-radius:12px;padding:10px 16px;margin:14px 0}
+  .small{font-size:15px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="row"><h1>🇬🇧 Unit 1 + Numbers 1–20 · Lundi 23.11</h1><div class="stars" id="stars">⭐ 0</div></div></header>
+<main>
+  <div class="steps" id="steps"></div>
+  <div class="card" id="card"></div>
+  <p class="small">⭐ = juste du premier coup. Si tu te trompes, tu as un indice et un 2e essai. Pas besoin d'écrire : tu écoutes et tu cliques ! Le mot anglais s'affiche après ta réponse.</p>
+</main>
+<script>
+const SECTIONS = [{"title": "Numbers", "emoji": "🔢", "intro": "Écoute le nombre 🔊 et clique sur le bon chiffre.", "questions": [{"answer": "3", "opts": ["3", "13", "8"], "hint": "Il est tout petit, plus petit que 5.", "explain": "three = 3", "label": "three = 3", "say": "three"}, {"answer": "13", "opts": ["13", "3", "12"], "hint": "Les nombres en « -teen » vont de 13 à 19.", "explain": "thirteen = 13", "label": "thirteen = 13", "say": "thirteen"}, {"answer": "7", "opts": ["7", "17", "11"], "hint": "Il est plus petit que 10.", "explain": "seven = 7", "label": "seven = 7", "say": "seven"}, {"answer": "15", "opts": ["15", "5", "14"], "hint": "Les nombres en « -teen » vont de 13 à 19.", "explain": "fifteen = 15", "label": "fifteen = 15", "say": "fifteen"}, {"answer": "12", "opts": ["12", "20", "2"], "hint": "Il vient juste après eleven (11).", "explain": "twelve = 12", "label": "twelve = 12", "say": "twelve"}, {"answer": "20", "opts": ["20", "12", "2"], "hint": "C'est le plus grand : deux dizaines.", "explain": "twenty = 20", "label": "twenty = 20", "say": "twenty"}, {"answer": "18", "opts": ["18", "8", "16"], "hint": "Les nombres en « -teen » vont de 13 à 19.", "explain": "eighteen = 18", "label": "eighteen = 18", "say": "eighteen"}, {"answer": "11", "opts": ["11", "7", "1"], "hint": "Il vient juste après ten (10).", "explain": "eleven = 11", "label": "eleven = 11", "say": "eleven"}, {"answer": "16", "opts": ["16", "6", "19"], "hint": "Les nombres en « -teen » vont de 13 à 19.", "explain": "sixteen = 16", "label": "sixteen = 16", "say": "sixteen"}]}, {"title": "Combien ?", "emoji": "🧮", "intro": "Écoute 🔊 : combien d'animaux ? Clique sur la bonne image.", "questions": [{"answer": "🐶🐶🐶", "opts": ["🐶🐶🐶", "🐶🐶", "🐱🐱🐱"], "hint": "Écoute le nombre ET l'animal.", "explain": "three dogs = trois chiens", "label": "three dogs (3 chiens)", "say": "three dogs"}, {"answer": "🐟🐟🐟🐟🐟", "opts": ["🐟🐟🐟🐟", "🐟🐟🐟🐟🐟", "🐭🐭🐭🐭🐭"], "hint": "Five = 5. Fish vit dans l'eau.", "explain": "five fish = cinq poissons", "label": "five fish (5 poissons)", "say": "five fish"}, {"answer": "🐰🐰", "opts": ["🐹🐹", "🐰🐰🐰", "🐰🐰"], "hint": "Two = 2. Le rabbit a de grandes oreilles.", "explain": "two rabbits = deux lapins", "label": "two rabbits (2 lapins)", "say": "two rabbits"}, {"answer": "🐱🐱🐱🐱", "opts": ["🐱🐱🐱🐱", "🐶🐶🐶🐶", "🐱🐱🐱"], "hint": "Four = 4. Le cat fait « miaou ».", "explain": "four cats = quatre chats", "label": "four cats (4 chats)", "say": "four cats"}]}, {"title": "Écoute la phrase", "emoji": "🎧", "intro": "Écoute 🔊. Que veut dire la phrase ?", "questions": [{"answer": "J'ai dix ans.", "opts": ["J'ai dix ans.", "J'ai deux ans.", "J'ai un chien."], "hint": "Ten = 10.", "explain": "I'm ten. = J'ai dix ans.", "label": "I'm ten. (j'ai 10 ans)", "say": "I'm ten."}, {"answer": "Bonjour ! (le matin)", "opts": ["Bonne nuit !", "Bonjour ! (le matin)", "Au revoir !"], "hint": "Morning = le matin.", "explain": "Good morning! = Bonjour ! (le matin)", "label": "Good morning!", "say": "Good morning!"}, {"answer": "Il s'appelle Tom.", "opts": ["Elle s'appelle Tom.", "Il s'appelle Tom.", "Je m'appelle Tom."], "hint": "His = pour un garçon.", "explain": "His name's Tom. = Il s'appelle Tom.", "label": "His name's Tom.", "say": "His name's Tom."}, {"answer": "Comment vas-tu ?", "opts": ["Comment vas-tu ?", "Quel âge as-tu ?", "Comment t'appelles-tu ?"], "hint": "On demande si ça va.", "explain": "How are you? = Comment vas-tu ?", "label": "How are you?", "say": "How are you?"}]}, {"title": "Mix", "emoji": "🌍", "intro": "Écoute 🔊 et clique sur la bonne réponse.", "questions": [{"answer": "🇨🇭", "opts": ["🇨🇭", "🇬🇧", "🇩🇪"], "hint": "C'est notre pays !", "explain": "Switzerland = Suisse", "label": "Switzerland (Suisse)", "say": "Switzerland"}, {"answer": "🇮🇹", "opts": ["🇪🇸", "🇮🇹", "🇫🇷"], "hint": "Le pays de la pizza.", "explain": "Italy = Italie", "label": "Italy (Italie)", "say": "Italy"}, {"answer": "🐭", "opts": ["🐹", "🐭", "🐰"], "hint": "Elle a peur du chat.", "explain": "mouse = souris", "label": "mouse (souris)", "say": "mouse"}, {"answer": "🛏️ Bonne nuit !", "opts": ["☀️ Bonjour !", "🛏️ Bonne nuit !", "👋 Salut !"], "hint": "Night = la nuit.", "explain": "Good night! = Bonne nuit ! (pour aller dormir)", "label": "Good night!", "say": "Good night!"}]}];
+const TOTAL = SECTIONS.reduce((n,s)=>n+s.questions.length,0);
+let S,Q,tries,stars,missed,order;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function pickVoice(){try{const v=speechSynthesis.getVoices().filter(x=>/^en/i.test(x.lang.replace("_","-")));return v.find(x=>x.name.indexOf("Daniel")===0)||v.find(x=>/premium|enhanced|natural/i.test(x.name))||v.find(x=>/^en-GB/i.test(x.lang.replace("_","-")))||v[0]||null}catch(e){return null}}
+function say(t,rate){if(!("speechSynthesis" in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-GB";u.rate=rate||0.66;const v=pickVoice();if(v)u.voice=v;speechSynthesis.speak(u)}
+if("speechSynthesis" in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}
+function start(){S=0;stars=0;missed=[];startSection()}
+function startSection(){Q=0;order=shuffle(SECTIONS[S].questions);renderQ()}
+function renderSteps(){const st=document.getElementById("steps");st.innerHTML="";SECTIONS.forEach((s,i)=>{const d=document.createElement("div");d.className="step"+(i<S?" done":i===S?" on":"");d.textContent=s.emoji+" "+s.title;st.appendChild(d)});document.getElementById("stars").textContent="⭐ "+stars+" / "+TOTAL}
+function renderQ(){
+  tries=0;renderSteps();
+  const sec=SECTIONS[S],q=order[Q],card=document.getElementById("card");
+  let h=`<div class="kicker">Partie ${S+1} / ${SECTIONS.length} · Question ${Q+1} / ${order.length}</div><h2>${sec.emoji} ${sec.title}</h2><p class="intro">${sec.intro}</p>`;
+  if(q.big)h+=`<div class="big">${q.big}</div>`;
+  if(q.prompt)h+=`<div class="prompt">${q.prompt}</div>`;
+  if(q.say){h+=`<button class="tool" id="listen">🔊 Écouter</button><button class="tool" id="slow">🐢 Plus lentement</button>`;}
+  const emo=q.opts.every(o=>[...o].length<=2);const pics=!emo&&q.opts.every(o=>/^[\p{Extended_Pictographic}️‍]+$/u.test(o));
+  h+=`<div class="opts${emo?" emoji":pics?" pics":""}" id="opts"></div><div class="fb" id="fb"></div><div class="next" id="next"></div>`;
+  card.innerHTML=h;
+  if(q.say){document.getElementById("listen").onclick=()=>say(q.say);document.getElementById("slow").onclick=()=>say(q.say,0.45);setTimeout(()=>say(q.say),350)}
+  const P=document.getElementById("peek");if(P)P.onclick=()=>{document.getElementById("word").textContent=q.say};
+  const box=document.getElementById("opts");
+  shuffle(q.opts).forEach(o=>{const b=document.createElement("button");b.textContent=o;b.onclick=()=>pick(b,o,q);box.appendChild(b)});
+}
+function pick(b,o,q){
+  const fb=document.getElementById("fb"),btns=[...document.querySelectorAll("#opts button")];
+  if(o===q.answer){b.classList.add("ok");btns.forEach(x=>x.disabled=true);
+    if(tries===0){stars++;fb.className="fb good";fb.innerHTML="⭐ Bravo ! "+q.explain}else{fb.className="fb good";fb.innerHTML="✅ Oui, bien trouvé ! "+q.explain}
+    if(q.say)setTimeout(()=>say(q.say),200);done();
+  }else{tries++;b.classList.add("ko");b.disabled=true;
+    if(tries===1){fb.className="fb hint";fb.innerHTML="🤔 Pas encore. Indice : "+q.hint}
+    else{btns.forEach(x=>{x.disabled=true;if(x.textContent===q.answer)x.classList.add("ok")});fb.className="fb bad";fb.innerHTML="La bonne réponse est <b>"+q.answer+"</b>. "+q.explain;missed.push(q.label);done()}}
+}
+function done(){
+  document.getElementById("stars").textContent="⭐ "+stars+" / "+TOTAL;
+  const n=document.getElementById("next"),last=Q===order.length-1,lastSec=S===SECTIONS.length-1;
+  const b=document.createElement("button");b.className="main-btn";
+  b.textContent=!last?"Question suivante →":!lastSec?"Partie suivante →":"Voir mon score 🏆";
+  b.onclick=()=>{if(!last){Q++;renderQ()}else if(!lastSec){S++;startSection()}else finish()};
+  n.appendChild(b);b.focus();
+}
+function finish(){
+  S=SECTIONS.length;renderSteps();const r=stars/TOTAL;
+  const msg=r>=0.9?"Excellent, Louis ! 🏆":r>=0.7?"Très bien, Louis ! Encore quelques mots à revoir. 💪":"Bon travail, Louis ! Tu progresses à chaque fois. 🌱";
+  let h=`<div class="end"><h2>🎉 Well done!</h2><div class="score">⭐ ${stars} / ${TOTAL}</div><p>${msg}</p>`;
+  h+=missed.length?`<div class="review"><b>À revoir :</b><ul>${missed.map(m=>"<li>"+m+"</li>").join("")}</ul></div>`:`<p>Aucune erreur : parfait ! 🌟</p>`;
+  h+=`<p class="small">Montre ton score à papa ou maman.</p><button class="main-btn" id="again">🔁 Recommencer</button></div>`;
+  document.getElementById("card").innerHTML=h;document.getElementById("again").onclick=start;
+}
+start();
+</script>
+</body>
+</html>
